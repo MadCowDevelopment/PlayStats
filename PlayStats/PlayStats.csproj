@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="2.5.1-ci1327" />
     <PackageReference Include="ReactiveUI.Fody" Version="10.0.0-preview.3" />
     <PackageReference Include="ReactiveUI.WPF" Version="10.0.0-preview.3" />
   </ItemGroup>
