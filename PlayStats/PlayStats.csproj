@@ -6,4 +6,25 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="NugetDetailsView.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI.Fody" Version="10.0.0-preview.3" />
+    <PackageReference Include="ReactiveUI.WPF" Version="10.0.0-preview.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="NugetDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="NugetDetailsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
 </Project>
