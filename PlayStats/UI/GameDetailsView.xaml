@@ -1,0 +1,18 @@
+﻿<reactiveui:ReactiveUserControl
+  x:Class="PlayStats.UI.GameDetailsView"
+  xmlns:local="clr-namespace:PlayStats.UI"
+  x:TypeArguments="local:GameDetailsViewModel"
+  xmlns:reactiveui="http://reactiveui.net"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid>
+    <TextBlock TextWrapping="WrapWithOverflow" 
+                 Margin="6" VerticalAlignment="Center">
+          <Run FontSize="14" FontWeight="SemiBold" x:Name="IdRun"/>
+          <LineBreak />
+          <Run FontSize="12" x:Name="NameRun"/>
+          <LineBreak />
+          <Hyperlink x:Name="openButton">Open</Hyperlink>
+    </TextBlock>
+  </Grid>
+</reactiveui:ReactiveUserControl>

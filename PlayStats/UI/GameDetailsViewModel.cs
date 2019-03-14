@@ -1,26 +1,26 @@
 ﻿// MainWindow class derives off ReactiveWindow which implements the IViewFor<TViewModel>
 // interface using a WPF DependencyProperty. We need this to use WhenActivated extension
 // method that helps us handling View and ViewModel activation and deactivation.
+using PlayStats.Data;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
 using System.Reactive;
 
-namespace PlayStats
+namespace PlayStats.UI
 {
-    // This class wraps out NuGet model object into a ViewModel and allows
-    // us to have a ReactiveCommand to open the NuGet package URL.
-    public class NugetDetailsViewModel : ReactiveObject
+    public class GameDetailsViewModel : ReactiveObject
     {
-        public NugetDetailsViewModel()
+        private readonly Game _game;
+
+        public GameDetailsViewModel(Game game)
         {
             OpenPage = ReactiveCommand.Create(() => { Process.Start(ProjectUrl.ToString()); });
+            _game = game;
         }
-
-        public Uri IconUrl => new Uri("https://git.io/fAlfh");
-        public string Description => "Description";
+        public string Name => _game.Name;
         public Uri ProjectUrl => new Uri("https://git.io/fAlfh");
-        public string Title => "Title";
+        public Guid Id => _game.Id;
 
         // ReactiveCommand allows us to execute logic without exposing any of the 
         // implementation details with the View. The generic parameters are the 

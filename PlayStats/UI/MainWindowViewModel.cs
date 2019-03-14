@@ -1,14 +1,16 @@
 ﻿// MainWindow class derives off ReactiveWindow which implements the IViewFor<TViewModel>
 // interface using a WPF DependencyProperty. We need this to use WhenActivated extension
 // method that helps us handling View and ViewModel activation and deactivation.
+using PlayStats.Data;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PlayStats
+namespace PlayStats.UI
 {
     // AppViewModel is where we will describe the interaction of our application.
     // We can describe the entire application in one class since it's very small now. 
@@ -35,8 +37,8 @@ namespace PlayStats
         // class subscribes to an Observable and stores a copy of the latest value.
         // It also runs an action whenever the property changes, usually calling
         // ReactiveObject's RaisePropertyChanged.
-        private readonly ObservableAsPropertyHelper<IEnumerable<NugetDetailsViewModel>> _searchResults;
-        public IEnumerable<NugetDetailsViewModel> SearchResults => _searchResults.Value;
+        private readonly ObservableAsPropertyHelper<IEnumerable<GameDetailsViewModel>> _searchResults;
+        public IEnumerable<GameDetailsViewModel> SearchResults => _searchResults.Value;
 
         // Here, we want to create a property to represent when the application 
         // is performing a search (i.e. when to show the "spinner" control that 
@@ -102,9 +104,13 @@ namespace PlayStats
         // Here we search NuGet packages using the NuGet.Client library. Ideally, we should
         // extract such code into a separate service, say, INuGetSearchService, but let's 
         // try to avoid overcomplicating things at this time.
-        private Task<IEnumerable<NugetDetailsViewModel>> SearchNuGetPackages(string term, CancellationToken token)
+        private Task<IEnumerable<GameDetailsViewModel>> SearchNuGetPackages(string term, CancellationToken token)
         {
-            return Task.FromResult<IEnumerable<NugetDetailsViewModel>>(new List<NugetDetailsViewModel> { new NugetDetailsViewModel() });
+            return Task.Run(() =>
+            {
+                var context = new CollectionContext();
+                return context.Games.Where(p=>p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
+            });
         }
     }
 }
