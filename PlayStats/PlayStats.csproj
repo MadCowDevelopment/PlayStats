@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190315061318_GameAndPlayDetails.cs" />
+    <Compile Remove="Migrations\20190315061318_GameAndPlayDetails.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="NugetDetailsView.xaml" />
     <None Remove="UI\GameDetailsView.xaml" />
   </ItemGroup>
