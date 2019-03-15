@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace PlayStats.Data
 {
@@ -10,14 +9,7 @@ namespace PlayStats.Data
 
         public string Name { get; set; }
 
-        // This can be expansions or other similar titles that will be grouped together.
-        public List<Game> LinkedGames { get; set; }
-
         public Guid ParentId { get; set; }
-
-        public Game Parent { get; set; }
-
-        public List<Play> Plays { get; set; }
 
         public double PurchasePrice { get; set; }
 

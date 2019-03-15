@@ -109,7 +109,7 @@ namespace PlayStats.UI
             return Task.Run(() =>
             {
                 var context = new CollectionContext();
-                return context.Games.Where(p=>p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
+                return context.GetGames().Where(p=>p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
             });
         }
     }

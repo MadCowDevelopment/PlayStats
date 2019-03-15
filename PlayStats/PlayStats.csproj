@@ -7,23 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190315061318_GameAndPlayDetails.cs" />
-    <Compile Remove="Migrations\20190315061318_GameAndPlayDetails.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="NugetDetailsView.xaml" />
     <None Remove="UI\GameDetailsView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="2.5.1-ci1327" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="ReactiveUI.Fody" Version="10.0.0-preview.3" />
     <PackageReference Include="ReactiveUI.WPF" Version="10.0.0-preview.3" />
   </ItemGroup>

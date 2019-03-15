@@ -44,13 +44,7 @@ namespace PlayStats.UI
             });
 
             var context = new CollectionContext();
-            var game = context.Games.FirstOrDefault();
-
-            context.Games.Add(new Game { Name = "A" });
-            context.SaveChanges();
-
-            game = context.Games.FirstOrDefault();
-            Debug.WriteLine(game.Name);
+            context.SampleAccess();
         }
     }
 }

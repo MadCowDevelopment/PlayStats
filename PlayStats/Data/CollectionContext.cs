@@ -1,17 +1,43 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using LiteDB;
+using System;
+using System.Collections.Generic;
 
 namespace PlayStats.Data
 {
-    public class CollectionContext : DbContext
+    public class CollectionContext
     {
-
-        public DbSet<Game> Games { get; set; }
-
-        public DbSet<Play> Plays { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public void SampleAccess()
         {
-            optionsBuilder.UseSqlite(@"Data Source=C:\Users\MGailer\OneDrive\Data\PlayStats\collection.db");
+            using (var db = new LiteDatabase(@"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db"))
+            {
+                var col = db.GetCollection<Game>("games");
+
+                var game = new Game
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "John Doe"
+                };
+
+                col.Insert(game);
+
+                game.Name = "Joana Doe";
+                col.Update(game);
+
+                col.EnsureIndex(x => x.Name);
+
+                var results = col.Find(x => x.Name.StartsWith("Jo"));
+            }
+        }
+
+        public IEnumerable<Game> GetGames()
+        {
+            using (var db = new LiteDatabase(@"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db"))
+            {
+                // Get a collection (or create, if doesn't exist)
+                var col = db.GetCollection<Game>("games");
+                return col.FindAll();
+            }
         }
     }
 }

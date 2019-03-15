@@ -8,8 +8,6 @@ namespace PlayStats.Data
 
         public Guid GameId { get; set; }
 
-        public Game Game { get; set; }
-
         public TimeSpan Duration { get; set; }
 
         public string Comment { get; set; }

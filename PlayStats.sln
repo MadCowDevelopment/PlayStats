@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayStats", "PlayStats\PlayStats.csproj", "{7748E5E6-E8D9-44A5-BC24-F06166FAA775}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayStats", "PlayStats\PlayStats.csproj", "{7748E5E6-E8D9-44A5-BC24-F06166FAA775}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleSheetImporter", "GoogleSheetImporter\GoogleSheetImporter.csproj", "{ABAEF73F-F9D2-4075-B46E-8BD3E5663546}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7748E5E6-E8D9-44A5-BC24-F06166FAA775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7748E5E6-E8D9-44A5-BC24-F06166FAA775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7748E5E6-E8D9-44A5-BC24-F06166FAA775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABAEF73F-F9D2-4075-B46E-8BD3E5663546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABAEF73F-F9D2-4075-B46E-8BD3E5663546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABAEF73F-F9D2-4075-B46E-8BD3E5663546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABAEF73F-F9D2-4075-B46E-8BD3E5663546}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
