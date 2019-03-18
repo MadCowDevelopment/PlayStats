@@ -108,7 +108,7 @@ namespace PlayStats.UI
         {
             return Task.Run(() =>
             {
-                var context = new CollectionContext();
+                var context = new LiteDBAccessor();
                 return context.LoadAll().Item1.Where(p=>p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
             });
         }

@@ -3,8 +3,6 @@
 // method that helps us handling View and ViewModel activation and deactivation.
 using PlayStats.Data;
 using ReactiveUI;
-using System.Diagnostics;
-using System.Linq;
 using System.Reactive.Disposables;
 
 namespace PlayStats.UI
@@ -43,7 +41,7 @@ namespace PlayStats.UI
                     .DisposeWith(disposableRegistration);
             });
 
-            var context = new CollectionContext();
+            var context = new LiteDBAccessor();
             context.SampleAccess();
         }
     }

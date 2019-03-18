@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PlayStats.Data
 {
-    public class CollectionContext
+    public class LiteDBAccessor
     {
         private const string DatabaseFile = @"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db";
 
