@@ -6,7 +6,7 @@ namespace GoogleSheetImporter
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var db = new LiteDBAccessor();
         }
     }
 }
