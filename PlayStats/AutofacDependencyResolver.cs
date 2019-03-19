@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Autofac.Core;
+using PlayStats.Data;
+using PlayStats.UI;
 using Splat;
 using System;
 using System.Collections;
@@ -26,7 +28,10 @@ namespace PlayStats
 
         private void RegisterServices()
         {
+            builder.RegisterType<MainWindowViewModel>().AsSelf();
 
+            builder.RegisterType<PlayAccessor>().As<IDataAccessor<Play>>();
+            builder.RegisterType<GameAccessor>().As<IDataAccessor<Game>>();
         }
     }
 

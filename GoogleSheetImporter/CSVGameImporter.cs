@@ -27,7 +27,7 @@ namespace GoogleSheetImporter
                 game.Rating = string.IsNullOrEmpty(cells[10]) ? 0 : int.Parse(cells[10]);
                 game.DesireToPlay = string.IsNullOrEmpty(cells[11]) ? 0 : int.Parse(cells[11]);
 
-                db.Add(game);
+                db.Create(game);
             }
         }
 

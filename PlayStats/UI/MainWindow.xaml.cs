@@ -1,8 +1,8 @@
 ﻿// MainWindow class derives off ReactiveWindow which implements the IViewFor<TViewModel>
 // interface using a WPF DependencyProperty. We need this to use WhenActivated extension
 // method that helps us handling View and ViewModel activation and deactivation.
-using PlayStats.Data;
 using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 
 namespace PlayStats.UI
@@ -12,7 +12,7 @@ namespace PlayStats.UI
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowViewModel();
+            ViewModel = Locator.Current.GetService<MainWindowViewModel>();
 
             // We create our bindings here. These are the code behind bindings which allow 
             // type safety. The bindings will only become active when the Window is being shown.

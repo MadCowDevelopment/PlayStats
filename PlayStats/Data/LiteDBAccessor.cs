@@ -13,12 +13,21 @@ namespace PlayStats.Data
     {
     }
 
-    public abstract class LiteDBAccessor<T> where T : Entity
+    public interface IDataAccessor<T> where T : Entity
+    {
+        void Create(T entity);
+        void Update(T entity);
+        void Delete(Guid id);
+        IEnumerable<T> GetAll();
+    }
+
+
+    public abstract class LiteDBAccessor<T> : IDataAccessor<T> where T : Entity
     {
         private const string DatabaseFile = @"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db";
         private readonly string CollectionName = $"{typeof(T).Name.ToLower().Replace("Entity", string.Empty)}s";
 
-        public void Add(T entity)
+        public void Create(T entity)
         {
             Execute(col => col.Insert(entity));
         }
@@ -33,7 +42,15 @@ namespace PlayStats.Data
                 col.Update(entity);
             });
         }
-        
+
+        public void Delete(Guid id)
+        {
+            Execute(col =>
+            {
+                col.Delete(id);
+            });
+        }
+
         public IEnumerable<T> GetAll()
         {
             return Execute(col => col.FindAll().ToList());

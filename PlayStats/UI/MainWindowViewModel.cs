@@ -46,9 +46,11 @@ namespace PlayStats.UI
         // to be the result of an Observable (i.e. its value is derived from 
         // some other property)
         private readonly ObservableAsPropertyHelper<bool> _isAvailable;
+        private readonly IDataAccessor<Game> _games;
+
         public bool IsAvailable => _isAvailable.Value;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IDataAccessor<Game> games)
         {
             // Creating our UI declaratively
             // 
@@ -80,7 +82,7 @@ namespace PlayStats.UI
             // us to have the latest results that we can expose through the property to the View.
             _searchResults = this
                 .WhenAnyValue(x => x.SearchTerm)
-                .Throttle(TimeSpan.FromMilliseconds(800))
+                .Throttle(TimeSpan.FromMilliseconds(200))
                 .Select(term => term?.Trim())
                 .DistinctUntilChanged()
                 .Where(term => !string.IsNullOrWhiteSpace(term))
@@ -99,17 +101,15 @@ namespace PlayStats.UI
                 .WhenAnyValue(x => x.SearchResults)
                 .Select(searchResults => searchResults != null)
                 .ToProperty(this, x => x.IsAvailable);
+            
+            _games = games;
         }
 
-        // Here we search NuGet packages using the NuGet.Client library. Ideally, we should
-        // extract such code into a separate service, say, INuGetSearchService, but let's 
-        // try to avoid overcomplicating things at this time.
         private Task<IEnumerable<GameDetailsViewModel>> SearchNuGetPackages(string term, CancellationToken token)
         {
             return Task.Run(() =>
             {
-                var context = new GameAccessor();
-                return context.GetAll().Where(p=>p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
+                return _games.GetAll().Where(p=>p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
             });
         }
     }

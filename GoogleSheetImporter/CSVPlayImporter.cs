@@ -31,7 +31,7 @@ namespace GoogleSheetImporter
                     var numberOfOldPlays = int.Parse(cells[2]);
                     for (int x = 0; x < numberOfOldPlays; x++)
                     {
-                        db.Add(play);
+                        db.Create(play);
                         play.Id = Guid.Empty;
                     }
                 }

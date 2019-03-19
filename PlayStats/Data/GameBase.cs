@@ -24,7 +24,13 @@
 
         public string Description { get; set; }
 
+        public byte[] Thumbnail { get; set; }
+
         public byte[] Image { get; set; }
+
+        public string Publisher { get; set; }
+
+        public string Designer { get; set; }
 
         #endregion
     }

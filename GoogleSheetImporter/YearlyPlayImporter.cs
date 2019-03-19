@@ -43,7 +43,7 @@ namespace GoogleSheetImporter
                     play.Comment = cells.Length == 4 ? cells[3] : null;
                     play.PlayerCount = game.SoloMode == SoloMode.None ? 2 : 1;
 
-                    db.Add(play);
+                    db.Create(play);
                 }
             }
         }
