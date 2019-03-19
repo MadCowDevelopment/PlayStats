@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.1" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="2.5.1-ci1327" />
     <PackageReference Include="ReactiveUI.Fody" Version="10.0.0-preview.3" />
