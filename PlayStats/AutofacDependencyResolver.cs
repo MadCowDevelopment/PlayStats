@@ -29,6 +29,7 @@ namespace PlayStats
         private void RegisterServices()
         {
             builder.RegisterType<MainWindowViewModel>().AsSelf();
+            builder.RegisterType<GameListViewModel>().AsSelf();
 
             builder.RegisterType<PlayAccessor>().As<IDataAccessor<Play>>();
             builder.RegisterType<GameAccessor>().As<IDataAccessor<Game>>();

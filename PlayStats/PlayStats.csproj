@@ -9,10 +9,12 @@
   <ItemGroup>
     <None Remove="NugetDetailsView.xaml" />
     <None Remove="UI\GameDetailsView.xaml" />
+    <None Remove="UI\GameListView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.1" />
+    <PackageReference Include="Dragablz" Version="0.0.3.203" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="2.5.1-ci1327" />
     <PackageReference Include="ReactiveUI.Fody" Version="10.0.0-preview.3" />
@@ -23,10 +25,16 @@
     <Compile Update="UI\GameDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\GameListView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <Page Update="UI\GameDetailsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="UI\GameListView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
