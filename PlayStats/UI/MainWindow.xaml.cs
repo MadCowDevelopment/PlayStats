@@ -40,9 +40,6 @@ namespace PlayStats.UI
                     view => view.searchTextBox.Text)
                     .DisposeWith(disposableRegistration);
             });
-
-            var context = new LiteDBAccessor();
-            context.SampleAccess();
         }
     }
 }

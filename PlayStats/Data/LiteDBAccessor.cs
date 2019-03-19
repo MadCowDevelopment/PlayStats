@@ -1,69 +1,65 @@
 ﻿using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PlayStats.Data
 {
-    public class LiteDBAccessor
+    public class PlayAccessor : LiteDBAccessor<Play>
+    {
+    }
+
+    public class GameAccessor : LiteDBAccessor<Game>
+    {
+    }
+
+    public abstract class LiteDBAccessor<T> where T : Entity
     {
         private const string DatabaseFile = @"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db";
+        private readonly string CollectionName = $"{typeof(T).Name.ToLower().Replace("Entity", string.Empty)}s";
 
-        private const string GamesCollection = "games";
-
-        public void SampleAccess()
+        public void Add(T entity)
         {
-            using (var db = CreateLiteDatabase())
-            {
-                var games = db.GetCollection<Game>(GamesCollection);
-                games.EnsureIndex(x => x.Name);
-            }
+            Execute(col => col.Insert(entity));
         }
 
-        public void AddGame(Game game)
+        public void Update(T entity)
         {
-            using (var db = CreateLiteDatabase())
+            Execute(col =>
             {
-                var col = db.GetCollection<Game>(GamesCollection);
-                col.Insert(game);
-            }
+                var existingEntity = col.FindById(new BsonValue(entity.Id));
+                if (existingEntity == null) return;
+                existingEntity.SetProperties(entity);
+                col.Update(entity);
+            });
         }
-
-        public void AddGames(IEnumerable<Game> games)
+        
+        public IEnumerable<T> GetAll()
         {
-            using (var db = CreateLiteDatabase())
-            {
-                var col = db.GetCollection<Game>(GamesCollection);
-                foreach (var game in games)
-                {
-                    col.Insert(game);
-                }
-            }
-        }
-
-        public void UpdateGame(Game game)
-        {
-            using (var db = CreateLiteDatabase())
-            {
-                var col = db.GetCollection<Game>(GamesCollection);
-                var existingGame = col.FindById(new BsonValue(game.Id));
-                if (existingGame == null) return;
-                existingGame.SetProperties(game);
-                col.Update(game);
-            }
-        }
-
-        public Tuple<IEnumerable<Game>> LoadAll()
-        {
-            using (var db = CreateLiteDatabase())
-            {
-                var col = db.GetCollection<Game>(GamesCollection);
-                return new Tuple<IEnumerable<Game>>(col.FindAll());
-            }
+            return Execute(col => col.FindAll().ToList());
         }
 
         private LiteDatabase CreateLiteDatabase()
         {
             return new LiteDatabase(DatabaseFile);
+        }
+
+        private void Execute(Action<LiteCollection<T>> action)
+        {
+            using (var db = CreateLiteDatabase())
+            {
+                var col = db.GetCollection<T>(CollectionName);
+                action(col);
+            }
+        }
+
+        private IEnumerable<T> Execute(Func<LiteCollection<T>, IEnumerable<T>> action)
+        {
+            using (var db = CreateLiteDatabase())
+            {
+                var col = db.GetCollection<T>(CollectionName);
+                return action(col);
+            }
         }
     }
 }
