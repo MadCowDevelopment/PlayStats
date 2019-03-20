@@ -5,11 +5,15 @@ using System.Linq;
 
 namespace PlayStats.Data
 {
-    public class PlayAccessor : LiteDBAccessor<Play>
+    public class PlayAccessor : LiteDBAccessor<PlayEntity>
     {
     }
 
-    public class GameAccessor : LiteDBAccessor<Game>
+    public class GameAccessor : LiteDBAccessor<GameEntity>
+    {
+    }
+
+    public class LinkedGameAccessor : LiteDBAccessor<LinkedGameEntity>
     {
     }
 
@@ -25,7 +29,7 @@ namespace PlayStats.Data
     public abstract class LiteDBAccessor<T> : IDataAccessor<T> where T : Entity
     {
         private const string DatabaseFile = @"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db";
-        private readonly string CollectionName = $"{typeof(T).Name.ToLower().Replace("Entity", string.Empty)}s";
+        private readonly string CollectionName = $"{typeof(T).Name.ToLower().Replace("entity", string.Empty)}s";
 
         public void Create(T entity)
         {
@@ -53,7 +57,7 @@ namespace PlayStats.Data
 
         public IEnumerable<T> GetAll()
         {
-            return Execute(col => col.FindAll().ToList());
+            return Execute(col => col.FindAll().AsEnumerable());
         }
 
         private LiteDatabase CreateLiteDatabase()

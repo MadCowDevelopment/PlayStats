@@ -1,7 +1,5 @@
 ﻿using Autofac;
 using Autofac.Core;
-using PlayStats.Data;
-using PlayStats.UI;
 using Splat;
 using System;
 using System.Collections;
@@ -11,30 +9,6 @@ using IContainer = Autofac.IContainer;
 
 namespace PlayStats
 {
-    public class AutofacDependencyRegistrar
-    {
-        protected ContainerBuilder builder;
-
-        public AutofacDependencyRegistrar()
-        {
-            builder = new ContainerBuilder();
-            RegisterServices();
-        }
-
-        public IContainer Build()
-        {
-            return builder.Build();
-        }
-
-        private void RegisterServices()
-        {
-            builder.RegisterType<MainWindowViewModel>().AsSelf();
-            builder.RegisterType<GameListViewModel>().AsSelf();
-
-            builder.RegisterType<PlayAccessor>().As<IDataAccessor<Play>>();
-            builder.RegisterType<GameAccessor>().As<IDataAccessor<Game>>();
-        }
-    }
 
     public class AutofacDependencyResolver : IMutableDependencyResolver
     {

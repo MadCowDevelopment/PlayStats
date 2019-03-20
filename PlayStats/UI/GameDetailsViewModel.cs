@@ -2,6 +2,7 @@
 // interface using a WPF DependencyProperty. We need this to use WhenActivated extension
 // method that helps us handling View and ViewModel activation and deactivation.
 using PlayStats.Data;
+using PlayStats.Models;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
@@ -11,9 +12,9 @@ namespace PlayStats.UI
 {
     public class GameDetailsViewModel : ReactiveObject
     {
-        private readonly Game _game;
+        private readonly GameModel _game;
 
-        public GameDetailsViewModel(Game game)
+        public GameDetailsViewModel(GameModel game)
         {
             OpenPage = ReactiveCommand.Create(() => { Process.Start(ProjectUrl.ToString()); });
             _game = game;

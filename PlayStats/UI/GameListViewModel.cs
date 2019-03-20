@@ -1,11 +1,11 @@
-﻿using PlayStats.Data;
+﻿using DynamicData;
+using PlayStats.Models;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PlayStats.UI
 {
@@ -30,80 +30,55 @@ namespace PlayStats.UI
         // class subscribes to an Observable and stores a copy of the latest value.
         // It also runs an action whenever the property changes, usually calling
         // ReactiveObject's RaisePropertyChanged.
-        private readonly ObservableAsPropertyHelper<IEnumerable<GameDetailsViewModel>> _searchResults;
-        public IEnumerable<GameDetailsViewModel> SearchResults => _searchResults.Value;
+        private ReadOnlyObservableCollection<GameDetailsViewModel> _searchResults;
+
+        private IObservable<IChangeSet<GameDetailsViewModel, Guid>> _gameDetails;
+
+        public IEnumerable<GameDetailsViewModel> SearchResults => _searchResults;
 
         // Here, we want to create a property to represent when the application 
         // is performing a search (i.e. when to show the "spinner" control that 
         // lets the user know that the app is busy). We also declare this property
         // to be the result of an Observable (i.e. its value is derived from 
         // some other property)
-        private readonly ObservableAsPropertyHelper<bool> _isAvailable;
-        private readonly IDataAccessor<Game> _games;
-
+        private ObservableAsPropertyHelper<bool> _isAvailable;
         public bool IsAvailable => _isAvailable.Value;
 
-        public GameListViewModel(IDataAccessor<Game> games)
+        private readonly IRepository _repository;
+
+        public GameListViewModel(IRepository repository)
         {
-            // Creating our UI declaratively
-            // 
-            // The Properties in this ViewModel are related to each other in different 
-            // ways - with other frameworks, it is difficult to describe each relation
-            // succinctly; the code to implement "The UI spinner spins while the search 
-            // is live" usually ends up spread out over several event handlers.
-            //
-            // However, with ReactiveUI, we can describe how properties are related in a 
-            // very organized clear way. Let's describe the workflow of what the user does 
-            // in this application, in the order they do it.
+            _repository = repository;
 
-            // We're going to take a Property and turn it into an Observable here - this
-            // Observable will yield a value every time the Search term changes, which in
-            // the XAML, is connected to the TextBox. 
-            //
-            // We're going to use the Throttle operator to ignore changes that happen too 
-            // quickly, since we don't want to issue a search for each key pressed! We 
-            // then pull the Value of the change, then filter out changes that are identical, 
-            // as well as strings that are empty.
-            //
-            // We then do a SelectMany() which starts the task by converting Task<IEnumerable<T>> 
-            // into IObservable<IEnumerable<T>>. If subsequent requests are made, the 
-            // CancellationToken is called. We then ObservableOn the main thread, 
-            // everything up until this point has been running on a separate thread due 
-            // to the Throttle().
-            //
-            // We then use a ObservableAsPropertyHelper and the ToProperty() method to allow
-            // us to have the latest results that we can expose through the property to the View.
-            _searchResults = this
-                .WhenAnyValue(x => x.SearchTerm)
-                .Throttle(TimeSpan.FromMilliseconds(200))
-                .Select(term => term?.Trim())
-                .DistinctUntilChanged()
-                .Where(term => !string.IsNullOrWhiteSpace(term))
-                .SelectMany(SearchNuGetPackages)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .ToProperty(this, x => x.SearchResults);
+            _repository.Load().ContinueWith(t =>
+            {
+                var dynamicFilter = this.WhenAnyValue(x => x.SearchTerm)
+                    .Throttle(TimeSpan.FromMilliseconds(200))
+                    .Select(term => term?.Trim())
+                    .DistinctUntilChanged()
+                    .Select(CreateFilterPredicate);
 
-            // We subscribe to the "ThrownExceptions" property of our OAPH, where ReactiveUI 
-            // marshals any exceptions that are thrown in SearchNuGetPackages method. 
-            // See the "Error Handling" section for more information about this.
-            _searchResults.ThrownExceptions.Subscribe(error => { /* Handle errors here */ });
+                var searchResultObservable = _repository.Games.Filter(dynamicFilter)
+                    .Transform(p => new GameDetailsViewModel(p));                    
 
-            // A helper method we can use for Visibility or Spinners to show if results are available.
-            // We get the latest value of the SearchResults and make sure it's not null.
-            _isAvailable = this
-                .WhenAnyValue(x => x.SearchResults)
-                .Select(searchResults => searchResults != null)
-                .ToProperty(this, x => x.IsAvailable);
+                var searchResults = searchResultObservable
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .AsObservableCache();
 
-            _games = games;
+                searchResults.Connect().Bind(out _searchResults).Subscribe();
+
+                _isAvailable = dynamicFilter
+                    .Select(x => true)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .ToProperty(this, x => x.IsAvailable);
+
+                _isAvailable.ThrownExceptions.Subscribe(error =>Console.WriteLine(error));
+            });
         }
 
-        private Task<IEnumerable<GameDetailsViewModel>> SearchNuGetPackages(string term, CancellationToken token)
+        private Func<GameModel, bool> CreateFilterPredicate(string term)
         {
-            return Task.Run(() =>
-            {
-                return _games.GetAll().Where(p => p.Name.Contains(term)).Select(p => new GameDetailsViewModel(p)).ToList().AsEnumerable();
-            });
+            return string.IsNullOrWhiteSpace(term) ? (Func<GameModel, bool>)(game => true) : game => game.Name.Contains(term);
         }
     }
 }

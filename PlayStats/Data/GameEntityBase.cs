@@ -1,6 +1,6 @@
 ﻿namespace PlayStats.Data
 {
-    public class GameBase : Entity
+    public class GameEntityBase : Entity
     {
         public string Name { get; set; }
 

@@ -29,7 +29,7 @@ namespace GoogleSheetImporter
                     var line = tsv[i];
                     var cells = line.Split('\t');
 
-                    var play = new Play();
+                    var play = new PlayEntity();
                     play.Date = DateTime.Parse(cells[0]);
                     play.Duration = TimeSpan.FromHours(double.Parse(cells[2], CultureInfo.InvariantCulture));
                     var game = games.FirstOrDefault(p => p.Name == cells[1]);

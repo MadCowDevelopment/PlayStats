@@ -2,7 +2,7 @@
 
 namespace PlayStats.Data
 {
-    public class Game : GameBase
+    public class GameEntity : GameEntityBase
     {
         public SoloMode SoloMode { get; set; }
 
@@ -10,6 +10,6 @@ namespace PlayStats.Data
 
         public int DesireToPlay { get; set; }
 
-        public List<LinkedGame> LinkedGames { get; set; }
+        public List<LinkedGameEntity> LinkedGames { get; set; }
     }
 }

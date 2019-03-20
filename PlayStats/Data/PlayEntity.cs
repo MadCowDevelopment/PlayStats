@@ -2,7 +2,7 @@
 
 namespace PlayStats.Data
 {
-    public class Play : Entity
+    public class PlayEntity : Entity
     {
         public DateTime Date { get; set; }
 

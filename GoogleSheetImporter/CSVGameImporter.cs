@@ -16,7 +16,7 @@ namespace GoogleSheetImporter
                 var line = csv[i];
                 var cells = line.Split(',');
 
-                var game = new Game();
+                var game = new GameEntity();
                 game.Name = cells[0];
                 game.SoloMode = GetSoloMode(cells[4]);
                 game.WantToSell = GetBool(cells[5]);

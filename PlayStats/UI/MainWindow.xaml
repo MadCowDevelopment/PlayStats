@@ -25,7 +25,7 @@
     <TabItem Header="GAME LIST">
       <reactiveui:ViewModelViewHost x:Name="gameList" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
     </TabItem>
-    <TabItem Header="HELLO">
+    <TabItem Header="MAIN">
       <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Hello World</TextBlock>
     </TabItem>
     <TabItem Header="MATERIAL">
