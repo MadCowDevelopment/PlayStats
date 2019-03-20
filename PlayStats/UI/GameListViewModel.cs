@@ -11,10 +11,6 @@ namespace PlayStats.UI
 {
     public class GameListViewModel : ReactiveObject
     {
-        // In ReactiveUI, this is the syntax to declare a read-write property
-        // that will notify Observers, as well as WPF, that a property has 
-        // changed. If we declared this as a normal property, we couldn't tell 
-        // when it has changed!
         private string _searchTerm;
         public string SearchTerm
         {
@@ -22,25 +18,9 @@ namespace PlayStats.UI
             set => this.RaiseAndSetIfChanged(ref _searchTerm, value);
         }
 
-        // Here's the interesting part: In ReactiveUI, we can take IObservables
-        // and "pipe" them to a Property - whenever the Observable yields a new
-        // value, we will notify ReactiveObject that the property has changed.
-        // 
-        // To do this, we have a class called ObservableAsPropertyHelper - this
-        // class subscribes to an Observable and stores a copy of the latest value.
-        // It also runs an action whenever the property changes, usually calling
-        // ReactiveObject's RaisePropertyChanged.
         private ReadOnlyObservableCollection<GameDetailsViewModel> _searchResults;
-
-        private IObservable<IChangeSet<GameDetailsViewModel, Guid>> _gameDetails;
-
         public IEnumerable<GameDetailsViewModel> SearchResults => _searchResults;
 
-        // Here, we want to create a property to represent when the application 
-        // is performing a search (i.e. when to show the "spinner" control that 
-        // lets the user know that the app is busy). We also declare this property
-        // to be the result of an Observable (i.e. its value is derived from 
-        // some other property)
         private ObservableAsPropertyHelper<bool> _isAvailable;
         public bool IsAvailable => _isAvailable.Value;
 
@@ -54,31 +34,29 @@ namespace PlayStats.UI
             {
                 var dynamicFilter = this.WhenAnyValue(x => x.SearchTerm)
                     .Throttle(TimeSpan.FromMilliseconds(200))
-                    .Select(term => term?.Trim())
+                    .Select(term => term?.Trim().ToLower())
                     .DistinctUntilChanged()
-                    .Select(CreateFilterPredicate);
+                    .Select(CreateSearchFilter);
 
-                var searchResultObservable = _repository.Games.Filter(dynamicFilter)
+                var searchResultObservable = _repository.Games
+                    .Filter(dynamicFilter)
                     .Transform(p => new GameDetailsViewModel(p));                    
 
-                var searchResults = searchResultObservable
+                searchResultObservable
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .AsObservableCache();
+                    .Bind(out _searchResults).Subscribe();
 
-                searchResults.Connect().Bind(out _searchResults).Subscribe();
-
-                _isAvailable = dynamicFilter
-                    .Select(x => true)
-                    .ObserveOn(RxApp.MainThreadScheduler)
+                _isAvailable = searchResultObservable
+                    .Select(x => x.Any())
                     .ToProperty(this, x => x.IsAvailable);
 
                 _isAvailable.ThrownExceptions.Subscribe(error =>Console.WriteLine(error));
             });
         }
 
-        private Func<GameModel, bool> CreateFilterPredicate(string term)
+        private Func<GameModel, bool> CreateSearchFilter(string term)
         {
-            return string.IsNullOrWhiteSpace(term) ? (Func<GameModel, bool>)(game => true) : game => game.Name.Contains(term);
+            return string.IsNullOrWhiteSpace(term) ? (Func<GameModel, bool>)(game => true) : game => game.Name.ToLower().Contains(term);
         }
     }
 }
