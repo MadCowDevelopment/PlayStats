@@ -6,11 +6,11 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:local="clr-namespace:PlayStats.UI"
-    x:TypeArguments="local:GameListViewModel"
+  x:TypeArguments="local:GameListViewModel"
   xmlns:reactiveui="http://reactiveui.net"
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800">
-  <Grid>
+  <Grid Margin="4">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="*" />
@@ -19,9 +19,8 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <TextBlock FontSize="16" FontWeight="SemiBold" 
-                   VerticalAlignment="Center" Text="Search for: "/>
-    <TextBox Grid.Column="1" Margin="6 0 0 0" x:Name="searchTextBox" materialDesign:HintAssist.Hint="Enter game name"/>
+    <TextBlock VerticalAlignment="Center" Text="Search for: "/>
+    <TextBox Grid.Column="1" Margin="6 0 0 0" x:Name="searchTextBox" materialDesign:HintAssist.Hint="Enter game name" Foreground="{DynamicResource MaterialDesignBody}"/>
     <ListBox x:Name="searchResultsListBox" Grid.ColumnSpan="3" 
                  Grid.Row="1" Margin="0,6,0,0" HorizontalContentAlignment="Stretch"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
