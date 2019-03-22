@@ -19,9 +19,9 @@
       <!-- tell Dragablz tab control to use the Material Design theme -->
       <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
 
-      <Style TargetType="{x:Type TextBlock}">
+      <!--<Style TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource MaterialDesignBody}"/>
-      </Style>
+      </Style>-->
       
     </ResourceDictionary>
   </Application.Resources>

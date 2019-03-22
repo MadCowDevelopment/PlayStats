@@ -25,6 +25,11 @@ namespace PlayStats.UI
                     viewModel => viewModel.GameList,
                     view => view.gameList.ViewModel)
                     .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
+                    viewModel => viewModel.Exit,
+                    view => view.ExitButton)
+                    .DisposeWith(disposableRegistration);
             });
         }
     }

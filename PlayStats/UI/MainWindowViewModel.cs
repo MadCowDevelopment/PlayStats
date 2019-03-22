@@ -1,4 +1,6 @@
 ﻿using ReactiveUI;
+using System.Windows;
+using System.Windows.Input;
 
 namespace PlayStats.UI
 {
@@ -7,6 +9,8 @@ namespace PlayStats.UI
         public MainWindowViewModel(GameListViewModel gameList)
         {
             GameList = gameList;
+
+            Exit = ReactiveCommand.Create(() => { Application.Current.Shutdown(); });
         }
 
         private GameListViewModel _gameList;
@@ -15,5 +19,7 @@ namespace PlayStats.UI
             get => _gameList;
             set => this.RaiseAndSetIfChanged(ref _gameList, value);
         }
+
+        public ICommand Exit { get; internal set; }
     }
 }
