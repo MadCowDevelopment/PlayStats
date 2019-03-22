@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 
 namespace PlayStats.UI
 {
-    public class GameListViewModel : ReactiveObject
+    public class GameListViewModel : ReactiveObject, IGameListTabViewModel
     {
         private string _searchTerm;
         public string SearchTerm
@@ -23,6 +23,8 @@ namespace PlayStats.UI
 
         private ObservableAsPropertyHelper<bool> _isAvailable;
         public bool IsAvailable => _isAvailable.Value;
+
+        public string Name { get; } = "GAME LIST";
 
         private readonly IRepository _repository;
 

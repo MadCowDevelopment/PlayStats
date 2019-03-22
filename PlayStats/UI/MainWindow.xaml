@@ -49,26 +49,11 @@
         <Separator />
         <Button ToolTip="Exit" x:Name="ExitButton" ToolTipService.InitialShowDelay="1800">
           <materialDesign:PackIcon Kind="EmergencyExit" />
-        </Button>       
+        </Button>
       </ToolBar>
     </ToolBarTray>
 
-    <dragablz:TabablzControl Grid.Row="1">
-      <dragablz:TabablzControl.InterTabController>
-        <dragablz:InterTabController />
-      </dragablz:TabablzControl.InterTabController>
-      <TabItem Header="HOME">
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">TODO: Add home page buttons</TextBlock>
-      </TabItem>
-      <TabItem Header="GAME LIST">
-        <reactiveui:ViewModelViewHost x:Name="gameList" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-      </TabItem>
-      <TabItem Header="MATERIAL">
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Material Design</TextBlock>
-      </TabItem>
-      <TabItem Header="DESIGN">
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Looks Quite Nice</TextBlock>
-      </TabItem>
-    </dragablz:TabablzControl>
+    <reactiveui:ViewModelViewHost Grid.Row="1" x:Name="ContentHost"/>
+
   </Grid>
 </reactiveui:ReactiveWindow>

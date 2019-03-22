@@ -1,4 +1,7 @@
-﻿using ReactiveUI;
+﻿using Autofac;
+using PlayStats.Services;
+using ReactiveUI;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -6,20 +9,32 @@ namespace PlayStats.UI
 {
     public class MainWindowViewModel : ReactiveObject
     {
-        public MainWindowViewModel(GameListViewModel gameList)
+        private readonly IViewModelFactory _viewModelFactory;
+
+        public MainWindowViewModel(IViewModelFactory viewModelFactory)
         {
-            GameList = gameList;
+            _viewModelFactory = viewModelFactory;
+
+            _content = _viewModelFactory.Create<GameListViewModel>();
 
             Exit = ReactiveCommand.Create(() => { Application.Current.Shutdown(); });
         }
 
-        private GameListViewModel _gameList;
-        public GameListViewModel GameList
+        private ObservableCollection<ITabViewModel> _tabs;
+
+        public ObservableCollection<ITabViewModel> Tabs
         {
-            get => _gameList;
-            set => this.RaiseAndSetIfChanged(ref _gameList, value);
+            get => _tabs;
+            set => this.RaiseAndSetIfChanged(ref _tabs, value);
         }
 
         public ICommand Exit { get; internal set; }
+
+        private ReactiveObject _content;
+        public ReactiveObject Content
+        {
+            get => _content;
+            private set => this.RaiseAndSetIfChanged(ref _content, value);
+        }
     }
 }

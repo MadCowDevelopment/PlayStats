@@ -22,8 +22,8 @@ namespace PlayStats.UI
             this.WhenActivated(disposableRegistration =>
             {
                 this.OneWayBind(ViewModel,
-                    viewModel => viewModel.GameList,
-                    view => view.gameList.ViewModel)
+                    viewModel => viewModel.Content,
+                    view => view.ContentHost.ViewModel)
                     .DisposeWith(disposableRegistration);
 
                 this.BindCommand(ViewModel,
