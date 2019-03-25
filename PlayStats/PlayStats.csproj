@@ -9,7 +9,9 @@
   <ItemGroup>
     <None Remove="NugetDetailsView.xaml" />
     <None Remove="UI\GameDetailsView.xaml" />
+    <None Remove="UI\GameGridView.xaml" />
     <None Remove="UI\GameListView.xaml" />
+    <None Remove="UI\HomeView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +27,12 @@
     <Compile Update="UI\GameDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\GameGridView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\HomeView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\GameListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -32,6 +40,12 @@
 
   <ItemGroup>
     <Page Update="UI\GameDetailsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="UI\GameGridView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="UI\HomeView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="UI\GameListView.xaml">
