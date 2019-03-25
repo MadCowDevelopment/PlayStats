@@ -27,6 +27,11 @@ namespace PlayStats.UI
                     .DisposeWith(disposableRegistration);
 
                 this.BindCommand(ViewModel,
+                    viewModel => viewModel.ShowGameList,
+                    view => view.ShowGameListButton)
+                    .DisposeWith(disposableRegistration);
+
+                this.BindCommand(ViewModel,
                     viewModel => viewModel.Exit,
                     view => view.ExitButton)
                     .DisposeWith(disposableRegistration);

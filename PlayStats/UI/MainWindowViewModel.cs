@@ -1,6 +1,8 @@
 ﻿using Autofac;
+using PlayStats.Models;
 using PlayStats.Services;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -10,31 +12,24 @@ namespace PlayStats.UI
     public class MainWindowViewModel : ReactiveObject
     {
         private readonly IViewModelFactory _viewModelFactory;
+        private readonly IRepository _repository;
 
-        public MainWindowViewModel(IViewModelFactory viewModelFactory)
+        public MainWindowViewModel(IViewModelFactory viewModelFactory, IRepository repository)
         {
             _viewModelFactory = viewModelFactory;
+            _repository = repository;
 
-            _content = _viewModelFactory.Create<GameListViewModel>();
+            _repository.Load().Wait(); // TODO: Load async
 
+            Content = _viewModelFactory.Create<GameListViewModel>();
+
+            ShowGameList = ReactiveCommand.Create(() => { Content = _viewModelFactory.Create<GameListViewModel>(); });
             Exit = ReactiveCommand.Create(() => { Application.Current.Shutdown(); });
         }
 
-        private ObservableCollection<ITabViewModel> _tabs;
+        public ICommand ShowGameList { get; }
+        public ICommand Exit { get; }
 
-        public ObservableCollection<ITabViewModel> Tabs
-        {
-            get => _tabs;
-            set => this.RaiseAndSetIfChanged(ref _tabs, value);
-        }
-
-        public ICommand Exit { get; internal set; }
-
-        private ReactiveObject _content;
-        public ReactiveObject Content
-        {
-            get => _content;
-            private set => this.RaiseAndSetIfChanged(ref _content, value);
-        }
+        [Reactive] public ReactiveObject Content { get; private set; }
     }
 }

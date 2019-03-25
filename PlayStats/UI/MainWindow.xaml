@@ -53,7 +53,7 @@
       </ToolBar>
     </ToolBarTray>
 
-    <reactiveui:ViewModelViewHost Grid.Row="1" x:Name="ContentHost"/>
+    <reactiveui:ViewModelViewHost Grid.Row="1" x:Name="ContentHost" HorizontalContentAlignment="Stretch"/>
 
   </Grid>
 </reactiveui:ReactiveWindow>

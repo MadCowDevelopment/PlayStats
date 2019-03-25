@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 
 namespace PlayStats.UI
 {
-    public class GameListViewModel : ReactiveObject, IGameListTabViewModel
+    public class GameListViewModel : ReactiveObject
     {
         private string _searchTerm;
         public string SearchTerm
@@ -24,36 +24,31 @@ namespace PlayStats.UI
         private ObservableAsPropertyHelper<bool> _isAvailable;
         public bool IsAvailable => _isAvailable.Value;
 
-        public string Name { get; } = "GAME LIST";
-
         private readonly IRepository _repository;
 
         public GameListViewModel(IRepository repository)
         {
             _repository = repository;
 
-            _repository.Load().ContinueWith(t =>
-            {
-                var dynamicFilter = this.WhenAnyValue(x => x.SearchTerm)
-                    .Throttle(TimeSpan.FromMilliseconds(200))
-                    .Select(term => term?.Trim().ToLower())
-                    .DistinctUntilChanged()
-                    .Select(CreateSearchFilter);
+            var dynamicFilter = this.WhenAnyValue(x => x.SearchTerm)
+                .Throttle(TimeSpan.FromMilliseconds(200))
+                .Select(term => term?.Trim().ToLower())
+                .DistinctUntilChanged()
+                .Select(CreateSearchFilter);
 
-                var searchResultObservable = _repository.Games
-                    .Filter(dynamicFilter)
-                    .Transform(p => new GameDetailsViewModel(p));                    
+            var searchResultObservable = _repository.Games
+                .Filter(dynamicFilter)
+                .Transform(p => new GameDetailsViewModel(p));
 
-                searchResultObservable
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .Bind(out _searchResults).Subscribe();
+            searchResultObservable
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _searchResults).Subscribe();
 
-                _isAvailable = searchResultObservable
-                    .Select(x => x.Any())
-                    .ToProperty(this, x => x.IsAvailable);
+            _isAvailable = searchResultObservable
+                .Select(x => x.Any())
+                .ToProperty(this, x => x.IsAvailable);
 
-                _isAvailable.ThrownExceptions.Subscribe(error =>Console.WriteLine(error));
-            });
+            _isAvailable.ThrownExceptions.Subscribe(error => Console.WriteLine(error));
         }
 
         private Func<GameModel, bool> CreateSearchFilter(string term)

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using PlayStats.Data;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace PlayStats.Models
 {
@@ -13,26 +14,11 @@ namespace PlayStats.Models
             Plays = plays;
         }
 
-        private SoloMode _soloMode;
-        public SoloMode SoloMode
-        {
-            get => _soloMode;
-            set => this.RaiseAndSetIfChanged(ref _soloMode, value);
-        }
+        [Reactive] public SoloMode SoloMode { get; set; }
 
-        private int _rating;
-        public int Rating
-        {
-            get => _rating;
-            set => this.RaiseAndSetIfChanged(ref _rating, value);
-        }
+        [Reactive] public int Rating { get; set; }
 
-        private int _desireToPlay;
-        public int DesireToPlay
-        {
-            get => _desireToPlay;
-            set => this.RaiseAndSetIfChanged(ref _desireToPlay, value);
-        }
+        [Reactive] public int DesireToPlay { get; set; }
 
         public ReadOnlyObservableCollection<LinkedGameModel> LinkedGames { get; }
 
