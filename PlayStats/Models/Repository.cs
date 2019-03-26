@@ -160,7 +160,6 @@ namespace PlayStats.Models
             model.YearPublished = entity.YearPublished;
         }
 
-
         private GameEntity MapGameModelToEntity(GameModel model)
         {
             var entity = new GameEntity();
