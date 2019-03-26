@@ -24,8 +24,7 @@ namespace PlayStats.Data
         void Delete(Guid id);
         IEnumerable<T> GetAll();
     }
-
-
+    
     public abstract class LiteDBAccessor<T> : IDataAccessor<T> where T : Entity
     {
         private const string DatabaseFile = @"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db";
@@ -41,7 +40,7 @@ namespace PlayStats.Data
             Execute(col =>
             {
                 var existingEntity = col.FindById(new BsonValue(entity.Id));
-                if (existingEntity == null) return;
+                if (existingEntity == null) throw new InvalidOperationException($"Could not find entity with ID {entity.Id} when trying to update in collection '{CollectionName}'.");
                 existingEntity.SetProperties(entity);
                 col.Update(entity);
             });
@@ -49,10 +48,7 @@ namespace PlayStats.Data
 
         public void Delete(Guid id)
         {
-            Execute(col =>
-            {
-                col.Delete(id);
-            });
+            Execute(col => col.Delete(id));
         }
 
         public IEnumerable<T> GetAll()

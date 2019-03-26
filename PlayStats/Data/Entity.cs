@@ -5,11 +5,6 @@ namespace PlayStats.Data
 {
     public class Entity
     {
-        public Entity()
-        {
-            Id = Guid.NewGuid();
-        }
-
         public Guid Id { get; set; }
 
         internal void SetProperties(Entity entity)
@@ -22,7 +17,7 @@ namespace PlayStats.Data
             {
                 if (prop.Name == "Id") continue;
                 var sourceValue = prop.GetValue(entity);
-                prop.SetValue(sourceValue, this);
+                prop.SetValue(this, sourceValue);
             }
         }
     }

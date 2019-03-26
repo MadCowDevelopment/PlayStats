@@ -1,8 +1,9 @@
 ﻿using DynamicData;
 using PlayStats.Data;
-using ReactiveUI;
+using PlayStats.Utils;
+using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -45,16 +46,36 @@ namespace PlayStats.Models
         public Task Load()
         {
             return Task.Run(() =>
-            {                              
+            {
                 LoadPlays();
                 LoadLinkedGames();
-                LoadGames();        
+                LoadGames();
             });
         }
-                
+
         public void AddOrUpdate(PlayModel play)
         {
+            var playEntity = MapPlayModelToEntity(play);
+
+            if (_plays.Keys.Contains(play.Id)) _playAccessor.Update(playEntity);
+            else _playAccessor.Create(playEntity);
+
             _plays.AddOrUpdate(play);
+        }
+
+        public void AddOrUpdate(GameModel game)
+        {
+            var gameEntity = MapGameModelToEntity(game);
+
+            if (_games.Keys.Contains(game.Id)) _gameAccessor.Update(gameEntity);
+            else _gameAccessor.Create(gameEntity);
+
+            _games.AddOrUpdate(game);
+        }
+
+        public void AddOrUpdate(LinkedGameModel game)
+        {
+            // TODO: Maybe no need?
         }
 
         private void LoadPlays()
@@ -65,6 +86,8 @@ namespace PlayStats.Models
                 var play = MapPlayEntityToModel(playEntity);
                 _plays.AddOrUpdate(play);
             }
+
+            Plays.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(p => AddOrUpdate(p));
         }
 
         private void LoadLinkedGames()
@@ -75,17 +98,20 @@ namespace PlayStats.Models
                 var linkedGame = MapLinkedGameEntityToModel(linkedGameEntity);
                 _linkedGames.AddOrUpdate(linkedGame);
             }
+
+            LinkedGames.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(p => AddOrUpdate(p));
         }
 
         private void LoadGames()
         {
             _games = new SourceCache<GameModel, Guid>(p => p.Id);
-            foreach(var gameEntity in _gameAccessor.GetAll())
+            foreach (var gameEntity in _gameAccessor.GetAll())
             {
                 var game = MapGameEntityToModel(gameEntity);
-
                 _games.AddOrUpdate(game);
             }
+
+            Games.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(p => AddOrUpdate(p));
         }
 
         private PlayModel MapPlayEntityToModel(PlayEntity playEntity)
@@ -95,7 +121,7 @@ namespace PlayStats.Models
             playModel.Date = playEntity.Date;
             playModel.Duration = playEntity.Duration;
             playModel.PlayerCount = playEntity.PlayerCount;
-            
+
             return playModel;
         }
 
@@ -132,6 +158,50 @@ namespace PlayStats.Models
             model.Thumbnail = entity.Thumbnail;
             model.WantToSell = entity.WantToSell;
             model.YearPublished = entity.YearPublished;
+        }
+
+
+        private GameEntity MapGameModelToEntity(GameModel model)
+        {
+            var entity = new GameEntity();
+            entity.Id = model.Id;
+
+            SetGameEntityBaseProperties(entity, model);
+
+            entity.DesireToPlay = model.DesireToPlay;
+            entity.Rating = model.Rating;
+            entity.SoloMode = model.SoloMode;
+
+            return entity;
+        }
+
+        private void SetGameEntityBaseProperties(GameEntityBase entity, GameModelBase model)
+        {
+            entity.Description = model.Description;
+            entity.Designer = model.Designer;
+            entity.FullName = model.FullName;
+            entity.Image = model.Image;
+            entity.IsDelivered = model.IsDelivered;
+            entity.IsGenuine = model.IsGenuine;
+            entity.Name = model.Name;
+            entity.ObjectId = model.ObjectId;
+            entity.Publisher = model.Publisher;
+            entity.PurchasePrice = model.PurchasePrice;
+            entity.SellPrice = model.SellPrice;
+            entity.Thumbnail = model.Thumbnail;
+            entity.WantToSell = model.WantToSell;
+            entity.YearPublished = model.YearPublished;
+        }
+
+        private PlayEntity MapPlayModelToEntity(PlayModel model)
+        {
+            var entity = new PlayEntity();
+            entity.Id = model.Id;
+            entity.Comment = model.Comment;
+            entity.Date = model.Date;
+            entity.Duration = model.Duration;
+            entity.PlayerCount = model.PlayerCount;
+            return entity;
         }
     }
 }
