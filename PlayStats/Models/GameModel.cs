@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Reactive.Linq;
-using DynamicData;
+﻿using DynamicData;
+using DynamicData.Aggregation;
 using PlayStats.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive.Linq;
 
 namespace PlayStats.Models
 {
@@ -16,36 +18,19 @@ namespace PlayStats.Models
                 .Bind(out _plays)
                 .Subscribe();
 
-            foreach(var play in plays.ToEnumerable())
-            {
-                var p = play;
-            }
-
             linkedGames
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _linkedGames)
                 .Subscribe();
-                 
-            var totalTimePlayed = plays.WhenValueChanged(p => p.Duration).Select(p =>
-              {
-                  TimeSpan total = new TimeSpan();
-                  foreach (var play in Plays)
-                  {
-                      total += play.Duration;
-                  }
 
-                  return total;
-              }).ToPropertyEx(this, x => x.TotalTimePlayed);
-
-            this.WhenAny(p => p.TotalTimePlayed, p => TotalTimePlayed.TotalHours != 0 ? PurchasePrice / TotalTimePlayed.TotalHours : 0)
+            plays.AutoRefresh(p => p.Duration)
+                .Sum(p => p.Duration.Ticks)
+                .Select(p => TimeSpan.FromTicks(p))
+                .ToPropertyEx(this, p => p.TotalTimePlayed);
+                        
+            this.WhenAnyValue(p => p.TotalTimePlayed, p=>p.PurchasePrice)
+                .Select(p => TotalTimePlayed.TotalHours != 0 ? PurchasePrice / TotalTimePlayed.TotalHours : 0)
                 .ToPropertyEx(this, x => x.Value);
-
-
-            //var sumDisposable = entries.Connect()
-            //  .Transform(x => x.TransferContext)
-            //  .AutoRefresh(x => x.BytesTransferred)
-            //  .Sum(x => x.BytesTransferred)
-            //  .Subscribe(x => progress.Report(x));
         }
 
         [Reactive] public SoloMode SoloMode { get; set; }
