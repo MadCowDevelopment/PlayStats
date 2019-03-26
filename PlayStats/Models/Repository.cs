@@ -108,16 +108,7 @@ namespace PlayStats.Models
 
         private GameModel MapGameEntityToModel(GameEntity entity)
         {
-            Plays.Filter(x => x.GameId == entity.Id)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Bind(out ReadOnlyObservableCollection<PlayModel> plays)
-                .Subscribe();
-            LinkedGames.Filter(x => x.GameId == entity.Id)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Bind(out ReadOnlyObservableCollection<LinkedGameModel> linkedGames)
-                .Subscribe();
-
-            var model = new GameModel(entity.Id, plays, linkedGames);
+            var model = new GameModel(entity.Id, Plays.Filter(x => x.GameId == entity.Id), LinkedGames.Filter(x => x.GameId == entity.Id));
             SetGameModelBaseProperties(model, entity);
             model.DesireToPlay = entity.DesireToPlay;
             model.Rating = entity.Rating;
