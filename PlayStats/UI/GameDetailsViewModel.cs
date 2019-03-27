@@ -19,6 +19,7 @@ namespace PlayStats.UI
             OpenPage = ReactiveCommand.Create(() => { Process.Start(ProjectUrl.ToString()); });
             _game = game;
         }
+
         public string Name => _game.Name;
         public Uri ProjectUrl => new Uri("https://git.io/fAlfh");
         public Guid Id => _game.Id;

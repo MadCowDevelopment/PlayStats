@@ -10,7 +10,7 @@ namespace PlayStats.UI
 {
     public class GameGridViewModel : ReactiveObject
     {
-        private ReadOnlyObservableCollection<GameModel> _games;
+        private readonly ReadOnlyObservableCollection<GameModel> _games;
         public IEnumerable<GameModel> Games => _games;
 
         public GameGridViewModel(IRepository repository)

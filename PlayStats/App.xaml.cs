@@ -13,7 +13,7 @@ namespace PlayStats
         public App()
         {
             var registrar = new AutofacDependencyRegistrar();
-            var resolver = new AutofacDependencyResolver(registrar.Build());
+            var resolver = new AutofacDependencyResolver(registrar.GetContainer());
 
             resolver.InitializeSplat();
             resolver.InitializeReactiveUI();

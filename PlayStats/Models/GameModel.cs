@@ -5,7 +5,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive.Linq;
 
 namespace PlayStats.Models
@@ -25,7 +24,7 @@ namespace PlayStats.Models
 
             plays.AutoRefresh(p => p.Duration)
                 .Sum(p => p.Duration.Ticks)
-                .Select(p => TimeSpan.FromTicks(p))
+                .Select(TimeSpan.FromTicks)
                 .ToPropertyEx(this, p => p.TotalTimePlayed);
                         
             this.WhenAnyValue(p => p.TotalTimePlayed, p=>p.PurchasePrice)
@@ -39,10 +38,10 @@ namespace PlayStats.Models
 
         [Reactive] public int DesireToPlay { get; set; }
 
-        private ReadOnlyObservableCollection<LinkedGameModel> _linkedGames;
+        private readonly ReadOnlyObservableCollection<LinkedGameModel> _linkedGames;
         public ReadOnlyObservableCollection<LinkedGameModel> LinkedGames => _linkedGames;
 
-        private ReadOnlyObservableCollection<PlayModel> _plays;
+        private readonly ReadOnlyObservableCollection<PlayModel> _plays;
         public ReadOnlyObservableCollection<PlayModel> Plays => _plays;
 
         #region Calculated properties

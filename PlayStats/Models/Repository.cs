@@ -5,7 +5,6 @@ using PlayStats.Utils;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace PlayStats.Models
@@ -13,6 +12,8 @@ namespace PlayStats.Models
     public interface IRepository
     {
         void AddOrUpdate(PlayModel play);
+        void AddOrUpdate(GameModel game);
+        void AddOrUpdate(LinkedGameModel game);
 
         Task Load();
 
@@ -45,9 +46,7 @@ namespace PlayStats.Models
         }
 
         public IObservable<IChangeSet<GameModel, Guid>> Games => _games.Connect();
-
         public IObservable<IChangeSet<PlayModel, Guid>> Plays => _plays.Connect();
-
         private IObservable<IChangeSet<LinkedGameModel, Guid>> LinkedGames => _linkedGames.Connect();
 
         public Task Load()
@@ -95,7 +94,7 @@ namespace PlayStats.Models
                 _plays.AddOrUpdate(play);
             }
 
-            Plays.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(p => AddOrUpdate(p));
+            Plays.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(AddOrUpdate);
         }
 
         private void LoadLinkedGames()
@@ -107,7 +106,7 @@ namespace PlayStats.Models
                 _linkedGames.AddOrUpdate(linkedGame);
             }
 
-            LinkedGames.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(p => AddOrUpdate(p));
+            LinkedGames.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(AddOrUpdate);
         }
 
         private void LoadGames()
@@ -123,7 +122,7 @@ namespace PlayStats.Models
                 _games.AddOrUpdate(game);
             }
 
-            Games.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(p => AddOrUpdate(p));
+            Games.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(AddOrUpdate);
         }
     }
 }

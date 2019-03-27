@@ -33,12 +33,12 @@ namespace PlayStats
             return config.CreateMapper();
         }
 
-        public static IObservable<IChangeSet<PlayModel, Guid>> ResolvePlays(GameEntity entity, ResolutionContext context)
+        private static IObservable<IChangeSet<PlayModel, Guid>> ResolvePlays(GameEntity entity, ResolutionContext context)
         {
             return context.Items[nameof(GameModel.Plays)] as IObservable<IChangeSet<PlayModel, Guid>>;
         }
 
-        public static IObservable<IChangeSet<LinkedGameModel, Guid>> ResolveLinkedGames(GameEntity entity, ResolutionContext context)
+        private static IObservable<IChangeSet<LinkedGameModel, Guid>> ResolveLinkedGames(GameEntity entity, ResolutionContext context)
         {
             return context.Items[nameof(GameModel.LinkedGames)] as IObservable<IChangeSet<LinkedGameModel, Guid>>;
         }

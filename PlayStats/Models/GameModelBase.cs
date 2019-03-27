@@ -5,7 +5,7 @@ namespace PlayStats.Models
 {
     public class GameModelBase : Model
     {
-        public GameModelBase(Guid id) : base(id)
+        protected GameModelBase(Guid id) : base(id)
         {
         }
 

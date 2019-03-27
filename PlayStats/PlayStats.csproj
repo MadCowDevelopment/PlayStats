@@ -153,7 +153,6 @@
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\HomeViewModel.cs" />
-    <Compile Include="UI\ITabViewModel.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

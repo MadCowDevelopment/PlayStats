@@ -5,7 +5,7 @@ namespace PlayStats.Models
 {
     public class Model : ReactiveObject
     {
-        public Model(Guid id)
+        protected Model(Guid id)
         {
             Id = id;
         }

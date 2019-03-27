@@ -6,7 +6,7 @@ namespace PlayStats.Models
     {
         public LinkedGameModel(Guid id, Guid gameId) : base(id)
         {
-            gameId = GameId;
+            GameId = gameId;
         }
 
         public Guid GameId { get; }

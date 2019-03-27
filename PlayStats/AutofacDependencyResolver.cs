@@ -9,7 +9,6 @@ using IContainer = Autofac.IContainer;
 
 namespace PlayStats
 {
-
     public class AutofacDependencyResolver : IMutableDependencyResolver
     {
         private readonly IContainer _container;
@@ -45,7 +44,7 @@ namespace PlayStats
             }
             catch (DependencyResolutionException)
             {
-                return null;
+                return Enumerable.Empty<object>();
             }
         }
 

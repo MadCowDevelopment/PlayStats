@@ -1,17 +1,15 @@
 ﻿using Autofac;
 using AutoMapper;
-using DynamicData;
 using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI;
-using System;
 
 namespace PlayStats
 {
     public class AutofacDependencyRegistrar
     {
-        protected ContainerBuilder builder;
+        private readonly ContainerBuilder builder;
 
         private IContainer _container;
 
@@ -21,7 +19,7 @@ namespace PlayStats
             RegisterServices();
         }
 
-        public IContainer Build()
+        public IContainer GetContainer()
         {
             return _container;
         }
@@ -47,7 +45,5 @@ namespace PlayStats
             builder.Register(ctx => _container);
             _container = builder.Build();
         }
-
-        
     }
 }

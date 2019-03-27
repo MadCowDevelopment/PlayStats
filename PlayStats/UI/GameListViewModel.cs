@@ -6,22 +6,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
+using ReactiveUI.Fody.Helpers;
 
 namespace PlayStats.UI
 {
     public class GameListViewModel : ReactiveObject
     {
-        private string _searchTerm;
-        public string SearchTerm
-        {
-            get => _searchTerm;
-            set => this.RaiseAndSetIfChanged(ref _searchTerm, value);
-        }
-
-        private ReadOnlyObservableCollection<GameDetailsViewModel> _searchResults;
+        private readonly ReadOnlyObservableCollection<GameDetailsViewModel> _searchResults;
         public IEnumerable<GameDetailsViewModel> SearchResults => _searchResults;
 
-        private ObservableAsPropertyHelper<bool> _isAvailable;
+        private readonly ObservableAsPropertyHelper<bool> _isAvailable;
         public bool IsAvailable => _isAvailable.Value;
 
         private readonly IRepository _repository;
@@ -48,8 +42,10 @@ namespace PlayStats.UI
                 .Select(x => x.Any())
                 .ToProperty(this, x => x.IsAvailable);
 
-            _isAvailable.ThrownExceptions.Subscribe(error => Console.WriteLine(error));
+            _isAvailable.ThrownExceptions.Subscribe(Console.WriteLine);
         }
+
+        [Reactive] public string SearchTerm { get; set; }
 
         private Func<GameModel, bool> CreateSearchFilter(string term)
         {
