@@ -1,6 +1,7 @@
 ﻿using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace PlayStats.Data
@@ -27,7 +28,9 @@ namespace PlayStats.Data
     
     public abstract class LiteDBAccessor<T> : IDataAccessor<T> where T : Entity
     {
-        private const string DatabaseFile = @"C:\Users\MGailer\OneDrive\Data\PlayStats\lite.db";
+        private readonly string DatabaseFile =
+            Path.Combine(Environment.GetEnvironmentVariable("OneDrive"), @"Data\PlayStats\lite.db");
+
         private readonly string CollectionName = $"{typeof(T).Name.ToLower().Replace("entity", string.Empty)}s";
 
         public void Create(T entity)
