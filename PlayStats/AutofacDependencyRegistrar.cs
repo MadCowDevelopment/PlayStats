@@ -1,8 +1,11 @@
 ﻿using Autofac;
+using AutoMapper;
+using DynamicData;
 using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI;
+using System;
 
 namespace PlayStats
 {
@@ -39,9 +42,12 @@ namespace PlayStats
 
             // Services
             builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>();
+            builder.RegisterInstance(AutoMapperConfigurator.CreateMapper()).As<IMapper>();
 
             builder.Register(ctx => _container);
             _container = builder.Build();
         }
+
+        
     }
 }

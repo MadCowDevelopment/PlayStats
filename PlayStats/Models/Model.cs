@@ -9,6 +9,7 @@ namespace PlayStats.Models
         {
             Id = id;
         }
+
         public Guid Id { get; }
     }
 }
