@@ -7,7 +7,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:reactiveui="http://reactiveui.net"
-  Title="PlayStats" Height="450" Width="800"
+  Title="PlayStats" Height="600" Width="800"
   mc:Ignorable="d"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -25,35 +25,35 @@
 
     <ToolBarTray IsLocked="true">
       <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
-        <Button ToolTip="Home" x:Name="ShowHomeButton" CommandParameter="{x:Type local:HomeViewModel}" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Home" x:Name="ShowHomeButton" CommandParameter="{x:Type local:HomeViewModel}" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="House" />
         </Button>
         <Separator/>
-        <Button ToolTip="Add a new game" x:Name="AddNewGameButton" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Add a new game" x:Name="AddNewGameButton" CommandParameter="{x:Type local:AddGameViewModel}" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="Add"/>
-        </Button>        
-        <Button ToolTip="Add a new play" x:Name="AddNewPlayButton" ToolTipService.InitialShowDelay="1800">
+        </Button>
+        <Button ToolTip="Add a new play" x:Name="AddNewPlayButton" CommandParameter="{x:Type local:AddPlayViewModel}" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="PlaylistAdd" />
         </Button>
         <Separator />
-        <Button ToolTip="Show game list" x:Name="ShowGameListButton" CommandParameter="{x:Type local:GameListViewModel}" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Show game list" x:Name="ShowGameListButton" CommandParameter="{x:Type local:GameListViewModel}" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="ViewList" />
         </Button>
-        <Button ToolTip="Show game grid" x:Name="ShowGameGridButton" CommandParameter="{x:Type local:GameGridViewModel}" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Show game grid" x:Name="ShowGameGridButton" CommandParameter="{x:Type local:GameGridViewModel}" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="GridOn" />
         </Button>
-        <Button ToolTip="Show game statistics" x:Name="ShowGameStatsButton" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Show game statistics" x:Name="ShowGameStatsButton" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="ChartLine" />
         </Button>
-        <Button ToolTip="Show top games" x:Name="ShowTopGamesButton" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Show top games" x:Name="ShowTopGamesButton" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="Trophy" />
         </Button>
         <Separator />
-        <Button ToolTip="Settings" x:Name="ShowSettingsButton" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Settings" x:Name="ShowSettingsButton" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="SettingsOutline" />
         </Button>
         <Separator />
-        <Button ToolTip="Exit" x:Name="ExitButton" ToolTipService.InitialShowDelay="1800">
+        <Button ToolTip="Exit" x:Name="ExitButton" ToolTipService.InitialShowDelay="1500">
           <materialDesign:PackIcon Kind="EmergencyExit" />
         </Button>
       </ToolBar>

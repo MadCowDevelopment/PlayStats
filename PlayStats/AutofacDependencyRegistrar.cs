@@ -29,6 +29,8 @@ namespace PlayStats
             // ViewModels
             builder.RegisterType<MainWindowViewModel>().AsSelf().SingleInstance();
             builder.RegisterType<HomeViewModel>().AsSelf().SingleInstance();
+            builder.RegisterType<AddPlayViewModel>().AsSelf();
+            builder.RegisterType<AddGameViewModel>().AsSelf();
             builder.RegisterType<GameListViewModel>().AsSelf().SingleInstance();
             builder.RegisterType<GameGridViewModel>().AsSelf().SingleInstance();
 

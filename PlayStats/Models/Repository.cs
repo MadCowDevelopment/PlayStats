@@ -11,6 +11,8 @@ namespace PlayStats.Models
 {
     public interface IRepository
     {
+        PlayModel CreatePlay(Guid gameId);
+
         void AddOrUpdate(PlayModel play);
         void AddOrUpdate(GameModel game);
         void AddOrUpdate(LinkedGameModel game);
@@ -57,6 +59,11 @@ namespace PlayStats.Models
                 LoadLinkedGames();
                 LoadGames();
             });
+        }
+
+        public PlayModel CreatePlay(Guid gameId)
+        {
+            return new PlayModel(Guid.NewGuid(), gameId);
         }
 
         public void AddOrUpdate(PlayModel play)

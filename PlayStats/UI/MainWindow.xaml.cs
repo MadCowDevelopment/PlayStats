@@ -14,7 +14,7 @@ namespace PlayStats.UI
         {
             InitializeComponent();
             ViewModel = Locator.Current.GetService<MainWindowViewModel>();
-            if(ViewModel == null)
+            if (ViewModel == null)
             {
                 throw new InvalidOperationException($"Couldn't resolve {nameof(MainWindowViewModel)}.");
             }
@@ -26,9 +26,18 @@ namespace PlayStats.UI
                     view => view.ContentHost.ViewModel)
                     .DisposeWith(disposableRegistration);
 
+                #region ToolBar buttons
                 this.BindCommand(ViewModel,
                     viewModel => viewModel.ShowView,
                     view => view.ShowHomeButton)
+                    .DisposeWith(disposableRegistration);
+                this.BindCommand(ViewModel,
+                        viewModel => viewModel.ShowView,
+                        view => view.AddNewGameButton)
+                    .DisposeWith(disposableRegistration);
+                this.BindCommand(ViewModel,
+                        viewModel => viewModel.ShowView,
+                        view => view.AddNewPlayButton)
                     .DisposeWith(disposableRegistration);
                 this.BindCommand(ViewModel,
                     viewModel => viewModel.ShowView,
@@ -38,6 +47,7 @@ namespace PlayStats.UI
                     viewModel => viewModel.ShowView,
                     view => view.ShowGameGridButton)
                     .DisposeWith(disposableRegistration);
+                #endregion ToolBar buttons
 
                 this.BindCommand(ViewModel,
                     viewModel => viewModel.Exit,

@@ -143,6 +143,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\ViewModelFactory.cs" />
+    <Compile Include="UI\AddGameViewModel.cs" />
+    <Compile Include="UI\AddPlayViewModel.cs" />
     <Compile Include="UI\GameDetailsView.xaml.cs">
       <DependentUpon>GameDetailsView.xaml</DependentUpon>
     </Compile>
@@ -155,6 +157,12 @@
       <DependentUpon>GameListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\GameListViewModel.cs" />
+    <Compile Include="UI\AddPlayView.xaml.cs">
+      <DependentUpon>AddPlayView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\AddGameView.xaml.cs">
+      <DependentUpon>AddGameView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -191,6 +199,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\GameListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\AddPlayView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\AddGameView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
