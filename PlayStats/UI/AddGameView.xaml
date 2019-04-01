@@ -11,6 +11,14 @@
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800">
   <Grid Margin="4" Background="Green">
-    <TextBlock Text="I'M ADD GAME"/>
+    <TextBox>
+      <TextBox.Text>
+        <Binding Path="Name" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+          <Binding.ValidationRules>
+            <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
+          </Binding.ValidationRules>
+        </Binding>
+      </TextBox.Text>
+    </TextBox>
   </Grid>
 </reactiveui:ReactiveUserControl>

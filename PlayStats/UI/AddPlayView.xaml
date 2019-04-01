@@ -13,7 +13,7 @@
   <GroupBox
     Header="Add new play" HorizontalAlignment="Center"
     Style="{DynamicResource MaterialDesignGroupBox}"
-    Margin="16" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+    Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
     BorderThickness="0">
     <Grid>
       <Grid.RowDefinitions>
@@ -31,9 +31,9 @@
       </Grid.ColumnDefinitions>
       <StackPanel Orientation="Vertical" Grid.Column="1">
         <ComboBox x:Name="GamesComboBox"
-        Margin="8"
+        Margin="4 4 4 10"
         IsEditable="True" DisplayMemberPath="Name"
-        ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}"
+        SelectedItem="{Binding SelectedGame, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True }"
         Style="{StaticResource MaterialDesignFloatingHintComboBox}">
           <materialDesign:HintAssist.Hint>
             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
@@ -47,12 +47,15 @@
             </ItemsPanelTemplate>
           </ComboBox.ItemsPanel>
         </ComboBox>
-        <DatePicker x:Name="DatePicker" Margin="8" materialDesign:HintAssist.Hint="Date" 
+        <DatePicker x:Name="DatePicker" Margin="4 10" materialDesign:HintAssist.Hint="Date" 
+                    SelectedDate="{Binding SelectedDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                     Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
-        <materialDesign:TimePicker x:Name="TimePicker" Margin="8" Is24Hours="False"
+        <materialDesign:TimePicker x:Name="TimePicker" Margin="4 10" Is24Hours="True"
                                    materialDesign:HintAssist.Hint="Duration" 
+                                   SelectedTime="{Binding SelectedTime, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                                    Style="{StaticResource MaterialDesignFloatingHintTimePicker}" />
-        <TextBox x:Name="PlayerCountTextBox" Margin="8" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+        <TextBox x:Name="PlayerCountTextBox" Margin="4 10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                 Text="{Binding PlayerCount, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, TargetNullValue=''}">
           <materialDesign:HintAssist.Hint>
             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
               <materialDesign:PackIcon Kind="Account" />
@@ -60,7 +63,7 @@
             </StackPanel>
           </materialDesign:HintAssist.Hint>
         </TextBox>
-        <TextBox x:Name="DescriptionTextBox" Margin="8" MinHeight="120" Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+        <TextBox x:Name="DescriptionTextBox" Margin="4 10" MinHeight="120" Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
                  VerticalAlignment="Top" AcceptsReturn="True" TextWrapping="Wrap">
           <materialDesign:HintAssist.Hint>
             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
@@ -69,7 +72,7 @@
             </StackPanel>
           </materialDesign:HintAssist.Hint>
         </TextBox>
-        <Button x:Name="SaveButton" IsDefault="True" Margin="8" Style="{StaticResource MaterialDesignRaisedDarkButton}" ToolTip="Save play to the database.">
+        <Button x:Name="SaveButton" IsDefault="True" Margin="4 10" Style="{StaticResource MaterialDesignRaisedDarkButton}" ToolTip="Save play to the database.">
           SAVE
         </Button>
       </StackPanel>

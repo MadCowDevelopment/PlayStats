@@ -14,6 +14,7 @@ namespace PlayStats.UI
 
             this.WhenActivated(disposableRegistration =>
             {
+                DataContext = ViewModel;
                 //this.OneWayBind(ViewModel,
                 //        viewModel => viewModel.IsAvailable,
                 //        view => view.searchResultsListBox.Visibility)

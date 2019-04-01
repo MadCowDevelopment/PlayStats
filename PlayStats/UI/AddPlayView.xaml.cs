@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using System.Reactive.Disposables;
-using System.Windows.Forms;
 
 namespace PlayStats.UI
 {
@@ -14,33 +13,25 @@ namespace PlayStats.UI
             InitializeComponent();
 
             this.WhenActivated(disposableRegistration =>
-                {
-                    this.OneWayBind(ViewModel, 
-                        vm => vm.AvailableGames, 
+            {
+                // This is necessary to make bindings in XAML work for validation.
+                DataContext = ViewModel;
+
+                this.OneWayBind(ViewModel,
+                        vm => vm.AvailableGames,
                         v => v.GamesComboBox.ItemsSource,
                         disposableRegistration);
-                    this.Bind(ViewModel,
-                        vm => vm.SelectedGame,
-                        v => v.GamesComboBox.SelectedItem,
-                        disposableRegistration);
-                    this.Bind(ViewModel,
-                        vm => vm.SelectedDate,
-                        v => v.DatePicker.SelectedDate,
-                        disposableRegistration);
-                    this.Bind(ViewModel,
-                        vm => vm.SelectedTime,
-                        v => v.TimePicker.SelectedTime);
-                    this.Bind(ViewModel,
-                        vm => vm.PlayerCount,
-                        v => v.PlayerCountTextBox.Text);
-                    this.Bind(ViewModel,
-                        vm => vm.Description,
-                        v => v.DescriptionTextBox.Text);
-                    this.BindCommand(ViewModel,
-                            viewModel => viewModel.Save,
-                            view => view.SaveButton)
-                        .DisposeWith(disposableRegistration);
-                });
+                this.Bind(ViewModel,
+                    vm => vm.Description,
+                    v => v.DescriptionTextBox.Text);
+
+                this.BindCommand(ViewModel,
+                        viewModel => viewModel.Save,
+                        view => view.SaveButton)
+                    .DisposeWith(disposableRegistration);
+
+                GamesComboBox.Focus();
+            });
         }
     }
 }
