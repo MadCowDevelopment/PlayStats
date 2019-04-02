@@ -13,9 +13,9 @@ namespace PlayStats.Models
     {
         PlayModel CreatePlay(Guid gameId);
 
-        void AddOrUpdate(PlayModel play);
-        void AddOrUpdate(GameModel game);
-        void AddOrUpdate(LinkedGameModel game);
+        Task AddOrUpdate(PlayModel play);
+        Task AddOrUpdate(GameModel game);
+        Task AddOrUpdate(LinkedGameModel game);
 
         Task Load();
 
@@ -37,8 +37,8 @@ namespace PlayStats.Models
 
         public Repository(
             IMapper mapper,
-            IDataAccessor<GameEntity> gameAccessor, 
-            IDataAccessor<PlayEntity> playAccessor, 
+            IDataAccessor<GameEntity> gameAccessor,
+            IDataAccessor<PlayEntity> playAccessor,
             IDataAccessor<LinkedGameEntity> linkedGameAccessor)
         {
             _mapper = mapper;
@@ -66,29 +66,36 @@ namespace PlayStats.Models
             return new PlayModel(Guid.NewGuid(), gameId);
         }
 
-        public void AddOrUpdate(PlayModel play)
+        public Task AddOrUpdate(PlayModel play)
         {
-            var playEntity = _mapper.Map<PlayEntity>(play);
+            return Task.Factory.StartNew(() =>
+            {
+                var playEntity = _mapper.Map<PlayEntity>(play);
 
-            if (_plays.Keys.Contains(play.Id)) _playAccessor.Update(playEntity);
-            else _playAccessor.Create(playEntity);
+                if (_plays.Keys.Contains(play.Id)) _playAccessor.Update(playEntity);
+                else _playAccessor.Create(playEntity);
 
-            _plays.AddOrUpdate(play);
+                _plays.AddOrUpdate(play);
+            });
         }
 
-        public void AddOrUpdate(GameModel game)
+        public Task AddOrUpdate(GameModel game)
         {
-            var gameEntity = _mapper.Map<GameEntity>(game);
+            return Task.Factory.StartNew(() =>
+            {
+                var gameEntity = _mapper.Map<GameEntity>(game);
 
-            if (_games.Keys.Contains(game.Id)) _gameAccessor.Update(gameEntity);
-            else _gameAccessor.Create(gameEntity);
+                if (_games.Keys.Contains(game.Id)) _gameAccessor.Update(gameEntity);
+                else _gameAccessor.Create(gameEntity);
 
-            _games.AddOrUpdate(game);
+                _games.AddOrUpdate(game);
+            });
         }
 
-        public void AddOrUpdate(LinkedGameModel game)
+        public Task AddOrUpdate(LinkedGameModel game)
         {
             // TODO: Maybe no need?
+            return Task.CompletedTask;
         }
 
         private void LoadPlays()
@@ -101,7 +108,8 @@ namespace PlayStats.Models
                 _plays.AddOrUpdate(play);
             }
 
-            Plays.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(AddOrUpdate);
+            Plays.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute))
+                .Subscribe(p => AddOrUpdate(p).Wait());
         }
 
         private void LoadLinkedGames()
@@ -113,7 +121,8 @@ namespace PlayStats.Models
                 _linkedGames.AddOrUpdate(linkedGame);
             }
 
-            LinkedGames.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(AddOrUpdate);
+            LinkedGames.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute))
+                .Subscribe(p => AddOrUpdate(p).Wait());
         }
 
         private void LoadGames()
@@ -129,7 +138,8 @@ namespace PlayStats.Models
                 _games.AddOrUpdate(game);
             }
 
-            Games.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute)).Subscribe(AddOrUpdate);
+            Games.WhenAnyPropertyWithAttributeChanged(typeof(ReactiveAttribute))
+                .Subscribe(p => AddOrUpdate(p).Wait());
         }
     }
 }

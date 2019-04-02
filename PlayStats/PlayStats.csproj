@@ -142,9 +142,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ViewModelFactory.cs" />
     <Compile Include="UI\AddGameViewModel.cs" />
     <Compile Include="UI\AddPlayViewModel.cs" />
+    <Compile Include="UI\Converters\DateTimeToDateConverter.cs" />
     <Compile Include="UI\Validation\DelegateRule.cs" />
     <Compile Include="UI\GameDetailsView.xaml.cs">
       <DependentUpon>GameDetailsView.xaml</DependentUpon>

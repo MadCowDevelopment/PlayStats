@@ -41,6 +41,7 @@ namespace PlayStats
             builder.RegisterType<LinkedGameAccessor>().As<IDataAccessor<LinkedGameEntity>>();
 
             // Services
+            builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>();
             builder.RegisterInstance(AutoMapperConfigurator.CreateMapper()).As<IMapper>();
 

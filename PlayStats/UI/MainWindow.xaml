@@ -7,7 +7,9 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:reactiveui="http://reactiveui.net"
-  Title="PlayStats" Height="600" Width="800"
+  Title="PlayStats - all your boardgames are belongs to us" 
+  Width="1024" Height="768" 
+  MinWidth="1024" MinHeight="768"
   mc:Ignorable="d"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -59,7 +61,7 @@
       </ToolBar>
     </ToolBarTray>
 
-    <reactiveui:ViewModelViewHost Grid.Row="1" x:Name="ContentHost" HorizontalContentAlignment="Stretch"/>
+    <reactiveui:ViewModelViewHost Grid.Row="1" x:Name="ContentHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
   </Grid>
 </reactiveui:ReactiveWindow>

@@ -21,9 +21,13 @@ namespace PlayStats.UI
                         vm => vm.AvailableGames,
                         v => v.GamesComboBox.ItemsSource,
                         disposableRegistration);
+                this.OneWayBind(ViewModel,
+                    vm => vm.RecentPlays,
+                    v => v.RecentPlaysGrid.ItemsSource);
+
                 this.Bind(ViewModel,
-                    vm => vm.Description,
-                    v => v.DescriptionTextBox.Text);
+                    vm => vm.Comment,
+                    v => v.CommentTextBox.Text);
 
                 this.BindCommand(ViewModel,
                         viewModel => viewModel.Save,

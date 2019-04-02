@@ -3,6 +3,7 @@ using DynamicData;
 using PlayStats.Data;
 using PlayStats.Models;
 using System;
+using PlayStats.UI;
 
 namespace PlayStats
 {
