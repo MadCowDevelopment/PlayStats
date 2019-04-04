@@ -5,6 +5,8 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Reactive.Linq;
 
 namespace PlayStats.Models
@@ -22,12 +24,18 @@ namespace PlayStats.Models
                 .Bind(out _linkedGames)
                 .Subscribe();
 
-            plays.AutoRefresh(p => p.Duration)
-                .Sum(p => p.Duration.Ticks)
-                .Select(TimeSpan.FromTicks)
+            var durationRefresh = plays.AutoRefresh(p => p.Duration);
+
+
+            var whenTotalTimePlayedChanged = durationRefresh
+                .ToCollection().Select(collection => collection.Select(p=>p.Duration.Ticks).Sum())
+                .Select(TimeSpan.FromTicks);
+            
+
+            whenTotalTimePlayedChanged
                 .ToPropertyEx(this, p => p.TotalTimePlayed);
-                        
-            this.WhenAnyValue(p => p.TotalTimePlayed, p=>p.PurchasePrice)
+
+            this.WhenAnyValue(p => p.TotalTimePlayed, p => p.PurchasePrice)
                 .Select(p => TotalTimePlayed.TotalHours != 0 ? PurchasePrice / TotalTimePlayed.TotalHours : 0)
                 .ToPropertyEx(this, x => x.Value);
         }
