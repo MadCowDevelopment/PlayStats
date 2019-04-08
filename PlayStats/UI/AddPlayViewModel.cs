@@ -109,9 +109,6 @@ namespace PlayStats.UI
             }
 
             _notificationService.Queue("Play saved successfully.");
-
-            Comment = string.Empty;
-            SelectedTime = null;
         }
     }
 
