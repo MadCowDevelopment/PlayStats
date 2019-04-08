@@ -28,7 +28,7 @@ namespace PlayStats.UI
 
             AddValidationRules();
 
-            repository.Games
+            _repository.Games
                 .Sort(SortExpressionComparer<GameModel>.Ascending(p => p.Name))
                 .Transform(p => new AvailableGameViewModel(p.Id, p.Name))
                 .ObserveOn(RxApp.MainThreadScheduler)
