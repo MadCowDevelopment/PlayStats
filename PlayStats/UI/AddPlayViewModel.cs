@@ -18,6 +18,8 @@ namespace PlayStats.UI
 {
     public class AddPlayViewModel : ValidationViewModel
     {
+        private const int DefaultNumberOfRecentPlays = 15;
+
         private readonly IRepository _repository;
         private readonly INotificationService _notificationService;
 
@@ -37,18 +39,33 @@ namespace PlayStats.UI
             var selectedGameFilter = this.WhenAnyValue(x => x.SelectedGame)
                 .Throttle(TimeSpan.FromMilliseconds(200))
                 .DistinctUntilChanged()
-                .Select(p=>p?.Id)
+                .Select(p => p?.Id)
                 .Select(CreateRecentPlayFilter);
+
+            this.WhenAnyValue(x => x.SelectedGame)
+                .Subscribe(p => NumberOfRecentPlays = DefaultNumberOfRecentPlays);
+
+            var whenTopChanges = this.WhenAnyValue(x => x.NumberOfRecentPlays)
+                .Select(p => new TopRequest(NumberOfRecentPlays));
 
             _repository.Plays
                 .Filter(selectedGameFilter)
-                .Sort(SortExpressionComparer<PlayModel>.Descending(p=>p.Date))
-                .Top(15)
+                .Sort(SortExpressionComparer<PlayModel>.Descending(p => p.Date))
+                .Virtualise(whenTopChanges)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _recentPlays).Subscribe();
 
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SavePlay, canSave);
+
+            var canLoadMore = _recentPlays.ToObservableChangeSet(p => p.Id).Select(p => _recentPlays.Count == NumberOfRecentPlays)
+                .ObserveOn(RxApp.MainThreadScheduler);
+            LoadMore = ReactiveCommand.Create(() => NumberOfRecentPlays += 15, canLoadMore);
+
+            _recentPlays.ToObservableChangeSet(p=>p.Id)
+                .StartWithEmpty()
+                .Select(p => string.Format($"{_recentPlays.Count} most recent plays"))
+                .ToPropertyEx(this, x => x.RecentPlaysHeader);
 
             SelectedDate = DateTime.Today;
             PlayerCount = 1;
@@ -56,7 +73,7 @@ namespace PlayStats.UI
 
         private Func<PlayModel, bool> CreateRecentPlayFilter(Guid? gameId)
         {
-            return gameId == null ? (Func<PlayModel, bool>) (play => false) : play => play.GameId.Equals(gameId);
+            return gameId == null ? (Func<PlayModel, bool>)(play => false) : play => play.GameId.Equals(gameId);
         }
 
         private void AddValidationRules()
@@ -82,13 +99,18 @@ namespace PlayStats.UI
         [Reactive] public int? PlayerCount { get; set; }
         [Reactive] public string Comment { get; set; }
 
+        [Reactive] public int NumberOfRecentPlays { get; set; } = DefaultNumberOfRecentPlays;
+
         public ICommand Save { get; }
+        public ICommand LoadMore { get; }
 
         private readonly ReadOnlyObservableCollection<AvailableGameViewModel> _availableGames;
         public IEnumerable<AvailableGameViewModel> AvailableGames => _availableGames;
 
         private readonly ReadOnlyObservableCollection<PlayModel> _recentPlays;
         public IEnumerable<PlayModel> RecentPlays => _recentPlays;
+
+        public string RecentPlaysHeader { [ObservableAsProperty] get; }
 
         private async Task SavePlay(CancellationToken cancellationToken)
         {
@@ -127,5 +149,16 @@ namespace PlayStats.UI
         {
             return Name;
         }
+    }
+
+    public class TopRequest : IVirtualRequest
+    {
+        public TopRequest(int size)
+        {
+            Size = size;
+        }
+
+        public int Size { get; }
+        public int StartIndex { get; } = 0;
     }
 }

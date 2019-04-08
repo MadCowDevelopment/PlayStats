@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using System.Reactive.Disposables;
+using System.Windows.Forms;
 
 namespace PlayStats.UI
 {
@@ -25,6 +26,10 @@ namespace PlayStats.UI
                     vm => vm.RecentPlays,
                     v => v.RecentPlaysGrid.ItemsSource);
 
+                this.OneWayBind(ViewModel,
+                    vm => vm.RecentPlaysHeader,
+                    v => v.RecentPlaysGroupBox.Header);
+
                 this.Bind(ViewModel,
                     vm => vm.Comment,
                     v => v.CommentTextBox.Text);
@@ -32,6 +37,10 @@ namespace PlayStats.UI
                 this.BindCommand(ViewModel,
                         viewModel => viewModel.Save,
                         view => view.SaveButton)
+                    .DisposeWith(disposableRegistration);
+                this.BindCommand(ViewModel,
+                        viewModel => viewModel.LoadMore,
+                        view => view.LoadMoreLink)
                     .DisposeWith(disposableRegistration);
 
                 GamesComboBox.Focus();

@@ -72,24 +72,34 @@
     </GroupBox>
     <Grid Grid.Column="1">
       <GroupBox VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
-              Header="15 most recent plays" HorizontalAlignment="Stretch"
+                x:Name="RecentPlaysGroupBox" HorizontalAlignment="Stretch"
               Style="{DynamicResource MaterialDesignGroupBox}"
               Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
               BorderThickness="0">
         <Grid Margin="4">
-            <DataGrid
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <DataGrid
               x:Name="RecentPlaysGrid"
               CanUserSortColumns="True"
               AutoGenerateColumns="False"
               dgx:DataGridFilter.IsAutoFilterEnabled="True"
               CanUserAddRows="False">
-              <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Width="120" Binding="{Binding Path=Date, Converter={StaticResource DateTimeToDateConverter}}" SortDirection="Descending"/>
-                <DataGridTextColumn Header="Duration" Width="120" Binding="{Binding Path=Duration}"/>
-                <DataGridTextColumn Header="Comment" Width="*" Binding="{Binding Path=Comment}"/>
-              </DataGrid.Columns>
-            </DataGrid>
-          </Grid>
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Date" Width="120" Binding="{Binding Path=Date, Converter={StaticResource DateTimeToDateConverter}}" SortDirection="Descending"/>
+              <DataGridTextColumn Header="Duration" Width="120" Binding="{Binding Path=Duration}"/>
+              <DataGridTextColumn Header="Comment" Width="*" Binding="{Binding Path=Comment}"/>
+            </DataGrid.Columns>
+          </DataGrid>
+          <TextBlock  Grid.Row="1"
+                      TextWrapping="WrapWithOverflow" 
+                      HorizontalAlignment="Center"
+                      Margin="4" VerticalAlignment="Center">
+            <Hyperlink x:Name="LoadMoreLink">Load more...</Hyperlink>
+          </TextBlock>
+        </Grid>
       </GroupBox>
 
     </Grid>
