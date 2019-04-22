@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using DynamicData.Binding;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI.Validation;
+using PlayStats.Utils;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -54,6 +56,8 @@ namespace PlayStats.UI
                 .Virtualise(whenTopChanges)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _recentPlays).Subscribe();
+
+            
 
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SavePlay, canSave);
@@ -112,13 +116,24 @@ namespace PlayStats.UI
 
         public string RecentPlaysHeader { [ObservableAsProperty] get; }
 
+        public PlayModel MostRecentPlay => _recentPlays.FirstOrDefault();
+
         private async Task SavePlay(CancellationToken cancellationToken)
         {
             try
             {
                 var play = _repository.CreatePlay(SelectedGame.Id);
                 play.Comment = Comment;
-                play.Date = SelectedDate.Value;
+
+                if (MostRecentPlay != null && MostRecentPlay.Date.IsSameDay(SelectedDate.Value))
+                {
+                    play.Date = MostRecentPlay.Date.AddMilliseconds(1);
+                }
+                else
+                {
+                    play.Date = SelectedDate.Value;
+                }
+                
                 play.Duration = new TimeSpan(SelectedTime.Value.Hour, SelectedTime.Value.Minute, 0);
                 play.PlayerCount = PlayerCount.Value;
 

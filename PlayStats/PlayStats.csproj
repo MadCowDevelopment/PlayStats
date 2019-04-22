@@ -176,6 +176,7 @@
     <Compile Include="UI\MainWindowViewModel.cs" />
     <Compile Include="UI\Validation\Rule.cs" />
     <Compile Include="UI\Validation\ValidationViewModel.cs" />
+    <Compile Include="Utils\DateTimeExtensions.cs" />
     <Compile Include="Utils\DynamicDataExtensions.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
