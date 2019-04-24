@@ -8,17 +8,100 @@
   xmlns:local="clr-namespace:PlayStats.UI"
   x:TypeArguments="local:AddGameViewModel"
   xmlns:reactiveui="http://reactiveui.net"
+  xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800">
-  <Grid Margin="4" Background="Green">
-    <TextBox>
-      <TextBox.Text>
-        <Binding Path="Name" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
-          <Binding.ValidationRules>
-            <local:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
-          </Binding.ValidationRules>
-        </Binding>
-      </TextBox.Text>
-    </TextBox>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="400"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <GroupBox
+      Grid.Column="0"
+      Header="Add new game" HorizontalAlignment="Stretch"
+      Style="{DynamicResource MaterialDesignGroupBox}"
+      Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+      BorderThickness="0">
+      <StackPanel Orientation="Vertical" Grid.Column="1">
+        <ComboBox x:Name="GamesComboBox"
+            Margin="4 4 4 10"
+            IsEditable="True" DisplayMemberPath="Name"
+            SelectedItem="{Binding SelectedGame, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True }"
+            Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="ChessQueen" />
+              <TextBlock>Game</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+          <ComboBox.ItemsPanel>
+            <ItemsPanelTemplate >
+              <VirtualizingStackPanel/>
+            </ItemsPanelTemplate>
+          </ComboBox.ItemsPanel>
+        </ComboBox>
+        <DatePicker x:Name="DatePicker" Margin="4 10" materialDesign:HintAssist.Hint="Date" 
+                    SelectedDate="{Binding SelectedDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                    Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+        <materialDesign:TimePicker x:Name="TimePicker" Margin="4 10" Is24Hours="True"
+                                   materialDesign:HintAssist.Hint="Duration" 
+                                   SelectedTime="{Binding SelectedTime, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                                   Style="{StaticResource MaterialDesignFloatingHintTimePicker}" />
+        <TextBox x:Name="PlayerCountTextBox" Margin="4 10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                 Text="{Binding PlayerCount, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, TargetNullValue=''}">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="Account" />
+              <TextBlock>Players</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+        </TextBox>
+        <TextBox x:Name="CommentTextBox" Margin="4 10" MinHeight="160" Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                 VerticalAlignment="Top" AcceptsReturn="True" TextWrapping="Wrap">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="CommentText" />
+              <TextBlock>Comment</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+        </TextBox>
+        <Button x:Name="SaveButton" IsDefault="True" Margin="4 10" Style="{StaticResource MaterialDesignRaisedDarkButton}" ToolTip="Save play to the database.">
+          SAVE
+        </Button>
+      </StackPanel>
+    </GroupBox>
+    <Grid Grid.Column="1">
+      <GroupBox VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+                x:Name="RecentPlaysGroupBox" HorizontalAlignment="Stretch"
+              Style="{DynamicResource MaterialDesignGroupBox}"
+              Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+              BorderThickness="0">
+        <Grid Margin="4">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <DataGrid
+              x:Name="RecentPlaysGrid"
+              CanUserSortColumns="True"
+              AutoGenerateColumns="False"
+              dgx:DataGridFilter.IsAutoFilterEnabled="True"
+              CanUserAddRows="False">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Date" Width="120" Binding="{Binding Path=Date, Converter={StaticResource DateTimeToDateConverter}}" SortDirection="Descending"/>
+              <DataGridTextColumn Header="Duration" Width="120" Binding="{Binding Path=Duration}"/>
+              <DataGridTextColumn Header="Comment" Width="*" Binding="{Binding Path=Comment}"/>
+            </DataGrid.Columns>
+          </DataGrid>
+          <TextBlock  Grid.Row="1"
+                      TextWrapping="WrapWithOverflow" 
+                      HorizontalAlignment="Center"
+                      Margin="4" VerticalAlignment="Center">
+            <Hyperlink x:Name="LoadMoreLink">Load more...</Hyperlink>
+          </TextBlock>
+        </Grid>
+      </GroupBox>
+
+    </Grid>
   </Grid>
 </reactiveui:ReactiveUserControl>

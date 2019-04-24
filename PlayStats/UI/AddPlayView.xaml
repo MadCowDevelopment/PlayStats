@@ -8,7 +8,6 @@
   xmlns:local="clr-namespace:PlayStats.UI"
   x:TypeArguments="local:AddPlayViewModel"
   xmlns:reactiveui="http://reactiveui.net"
-  xmlns:services="clr-namespace:PlayStats.Services"
   xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
   mc:Ignorable="d">
   <Grid>
@@ -101,10 +100,6 @@
           </TextBlock>
         </Grid>
       </GroupBox>
-
     </Grid>
-    <materialDesign:Snackbar MessageQueue="{services:MessageQueue}"
-                             Margin="10 0 10 0" Grid.Column="0" Grid.ColumnSpan="2"
-                             HorizontalContentAlignment="Center"/>
   </Grid>
 </reactiveui:ReactiveUserControl>

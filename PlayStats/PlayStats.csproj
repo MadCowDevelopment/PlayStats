@@ -146,7 +146,9 @@
     <Compile Include="Services\ViewModelFactory.cs" />
     <Compile Include="UI\AddGameViewModel.cs" />
     <Compile Include="UI\AddPlayViewModel.cs" />
+    <Compile Include="UI\AvailableGameViewModel.cs" />
     <Compile Include="UI\Converters\DateTimeToDateConverter.cs" />
+    <Compile Include="UI\TopRequest.cs" />
     <Compile Include="UI\Validation\DelegateRule.cs" />
     <Compile Include="UI\GameDetailsView.xaml.cs">
       <DependentUpon>GameDetailsView.xaml</DependentUpon>

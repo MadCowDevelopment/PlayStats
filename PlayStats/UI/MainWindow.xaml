@@ -12,6 +12,7 @@
   MinWidth="1024" MinHeight="768"
   mc:Ignorable="d"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+  xmlns:services="clr-namespace:PlayStats.Services"
   TextElement.Foreground="{DynamicResource MaterialDesignBody}"
   TextOptions.TextFormattingMode="Ideal"
   TextOptions.TextRenderingMode="Auto"
@@ -63,5 +64,9 @@
 
     <reactiveui:ViewModelViewHost Grid.Row="1" x:Name="ContentHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
+    <materialDesign:Snackbar Grid.Row="1" MessageQueue="{services:MessageQueue}"
+                             Margin="10 0 10 0" Grid.Column="0"
+                             VerticalAlignment="Bottom"
+                             HorizontalContentAlignment="Center"/>
   </Grid>
 </reactiveui:ReactiveWindow>
