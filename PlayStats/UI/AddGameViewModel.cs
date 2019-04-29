@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AutoMapper;
 using DynamicData;
 using DynamicData.Binding;
+using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI.Validation;
@@ -28,6 +29,10 @@ namespace PlayStats.UI
             _repository = repository;
             _notificationService = notificationService;
 
+            _availableSoloModes =
+                new ReadOnlyCollection<SoloModeViewModel>(
+                    ((SoloMode[]) Enum.GetValues(typeof(SoloMode))).Select(p => new SoloModeViewModel(p)).ToList());
+
             AddValidationRules();
 
             _repository.Games
@@ -35,6 +40,10 @@ namespace PlayStats.UI
                 .Transform(p => new AvailableGameViewModel(p.Id, p.Name))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _availableGames).Subscribe();
+
+            IsGameChecked = true;
+            IsDelivered = false;
+            SelectedSoloMode = _availableSoloModes[1];
             
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SaveGame, canSave);
@@ -47,11 +56,20 @@ namespace PlayStats.UI
         }
 
         [Reactive] public AvailableGameViewModel SelectedGame { get; set; }
-     
+        [Reactive] public bool IsGameChecked { get; set; }
+        [Reactive] public bool IsExpansionChecked { get; set; }
+        [Reactive] public string GameName { get; set; }
+        [Reactive] public double? PurchasePrice { get; set; }
+        [Reactive] public bool IsDelivered { get; set; }
+        [Reactive] public SoloModeViewModel SelectedSoloMode { get; set; }
+
         public ICommand Save { get; }
-     
+
         private readonly ReadOnlyObservableCollection<AvailableGameViewModel> _availableGames;
         public IEnumerable<AvailableGameViewModel> AvailableGames => _availableGames;
+
+        private readonly ReadOnlyCollection<SoloModeViewModel> _availableSoloModes;
+        public IEnumerable<SoloModeViewModel> AvailableSoloModes => _availableSoloModes;
 
         private async Task SaveGame(CancellationToken cancellationToken)
         {
@@ -67,6 +85,21 @@ namespace PlayStats.UI
             }
 
             _notificationService.Queue("Game saved successfully.");
+        }
+    }
+
+    public class SoloModeViewModel : ReactiveObject
+    {
+        public SoloMode SoloMode { get; }
+
+        public SoloModeViewModel(SoloMode soloMode)
+        {
+            SoloMode = soloMode;
+        }
+
+        public override string ToString()
+        {
+            return SoloMode.ToString();
         }
     }
 }

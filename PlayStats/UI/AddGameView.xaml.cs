@@ -15,10 +15,37 @@ namespace PlayStats.UI
             this.WhenActivated(disposableRegistration =>
             {
                 DataContext = ViewModel;
-                //this.OneWayBind(ViewModel,
-                //        viewModel => viewModel.IsAvailable,
-                //        view => view.searchResultsListBox.Visibility)
-                //        .DisposeWith(disposableRegistration);
+
+                this.Bind(ViewModel,
+                    vm => vm.IsGameChecked,
+                    v => v.GameRadioButton.IsChecked);
+                this.Bind(ViewModel,
+                    vm => vm.IsExpansionChecked,
+                    v => v.ExpansionRadioButton.IsChecked);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.AvailableGames,
+                    v => v.GamesComboBox.ItemsSource,
+                    disposableRegistration);
+
+                this.Bind(ViewModel,
+                    vm => vm.IsDelivered,
+                    v => v.IsDeliveredCheckBox.IsChecked);
+
+                this.Bind(ViewModel,
+                    vm => vm.SelectedSoloMode,
+                    v => v.SoloModeComboBox.SelectedItem);
+                this.OneWayBind(ViewModel,
+                    vm => vm.AvailableSoloModes,
+                    v => v.SoloModeComboBox.ItemsSource,
+                    disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.IsGameChecked,
+                    v => v.GameNameTextBox.Visibility);
+                this.OneWayBind(ViewModel,
+                    vm => vm.IsExpansionChecked,
+                    v => v.GamesComboBox.Visibility);
             });
         }
     }
