@@ -47,8 +47,7 @@ namespace PlayStats.UI.Validation
 
         private void Validate(string propertyName)
         {
-            if (!_rules.ContainsKey(propertyName)) return;
-            _rules[propertyName].ForEach(p => p.Validate(this));
+            _rules.Values.SelectMany(p=>p).ToList().ForEach(p => p.Validate(this));
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
 

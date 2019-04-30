@@ -13,7 +13,6 @@ using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI.Validation;
-using PlayStats.Utils;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -33,6 +32,10 @@ namespace PlayStats.UI
                 new ReadOnlyCollection<SoloModeViewModel>(
                     ((SoloMode[]) Enum.GetValues(typeof(SoloMode))).Select(p => new SoloModeViewModel(p)).ToList());
 
+            IsGameChecked = true;
+            IsDelivered = false;
+            SelectedSoloMode = _availableSoloModes[1];
+
             AddValidationRules();
 
             _repository.Games
@@ -41,18 +44,22 @@ namespace PlayStats.UI
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _availableGames).Subscribe();
 
-            IsGameChecked = true;
-            IsDelivered = false;
-            SelectedSoloMode = _availableSoloModes[1];
-            
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SaveGame, canSave);
         }
 
         private void AddValidationRules()
         {
-            //AddRule(new DelegateRule<AddPlayViewModel>(nameof(SelectedGame),
-            //    p => p.SelectedGame != null ? string.Empty : "No game selected"));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(SelectedGame),
+                p => IsExpansionChecked && SelectedGame == null ? "No game selected" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(GameName),
+                p => IsGameChecked && string.IsNullOrEmpty(GameName) ? "Game needs a name" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(GameName),
+                p => IsGameChecked && GameName != null && AvailableGames.Any(g=>g.Name.ToLower().Equals(GameName.ToLower())) ? "Game with same name already exists" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(PurchasePrice),
+                p => !PurchasePrice.HasValue || PurchasePrice.Value < 1 ? "Purchase price needs to be greater than or equal to 1" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(SelectedSoloMode),
+                p => IsGameChecked && SelectedSoloMode == null ? "No solo mode selected" : string.Empty));
         }
 
         [Reactive] public AvailableGameViewModel SelectedGame { get; set; }
@@ -75,8 +82,9 @@ namespace PlayStats.UI
         {
             try
             {
-                //var play = _repository.CreatePlay(SelectedGame.Id);
-                //await _repository.AddOrUpdate(play);
+                var game = IsGameChecked ? CreateGame() : (GameModelBase)CreateExpansion();
+                game.IsDelivered = IsDelivered;
+                await _repository.AddOrUpdate(game);
             }
             catch (Exception)
             {
@@ -85,6 +93,20 @@ namespace PlayStats.UI
             }
 
             _notificationService.Queue("Game saved successfully.");
+        }
+
+        private GameModel CreateGame()
+        {
+            var game = _repository.CreateGame();
+            game.Name = GameName;
+            game.SoloMode = SelectedSoloMode.SoloMode;
+            return game;
+        }
+
+        private LinkedGameModel CreateExpansion()
+        {
+            var expansion = _repository.CreateLinkedGame(SelectedGame.Id);
+            return expansion;
         }
     }
 

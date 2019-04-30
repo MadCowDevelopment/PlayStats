@@ -46,7 +46,12 @@ namespace PlayStats.UI
                 this.OneWayBind(ViewModel,
                     vm => vm.IsExpansionChecked,
                     v => v.GamesComboBox.Visibility);
-            });
+
+                this.BindCommand(ViewModel,
+                        viewModel => viewModel.Save,
+                        view => view.SaveButton)
+                    .DisposeWith(disposableRegistration);
+        });
         }
     }
 }

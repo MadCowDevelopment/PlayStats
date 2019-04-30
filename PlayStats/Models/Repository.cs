@@ -12,10 +12,11 @@ namespace PlayStats.Models
     public interface IRepository
     {
         PlayModel CreatePlay(Guid gameId);
+        GameModel CreateGame();
+        LinkedGameModel CreateLinkedGame(Guid gameId);
 
         Task AddOrUpdate(PlayModel play);
-        Task AddOrUpdate(GameModel game);
-        Task AddOrUpdate(LinkedGameModel game);
+        Task AddOrUpdate(GameModelBase gameModelBase);
 
         Task Load();
 
@@ -66,6 +67,17 @@ namespace PlayStats.Models
             return new PlayModel(Guid.NewGuid(), gameId);
         }
 
+        public GameModel CreateGame()
+        {
+            var gameId = Guid.NewGuid();
+            return new GameModel(gameId, Plays.Filter(x => x.GameId == gameId), LinkedGames.Filter(x => x.GameId == gameId));
+        }
+
+        public LinkedGameModel CreateLinkedGame(Guid gameId)
+        {
+            return new LinkedGameModel(Guid.NewGuid(), gameId);
+        }
+
         public Task AddOrUpdate(PlayModel play)
         {
             return Task.Factory.StartNew(() =>
@@ -77,6 +89,21 @@ namespace PlayStats.Models
 
                 _plays.AddOrUpdate(play);
             });
+        }
+
+        public Task AddOrUpdate(GameModelBase gameModelBase)
+        {
+            if (gameModelBase is GameModel game)
+            {
+                return AddOrUpdate(game);
+            }
+
+            if (gameModelBase is LinkedGameModel expansion)
+            {
+                return AddOrUpdate(expansion);
+            }
+
+            throw new InvalidOperationException($"Type {gameModelBase.GetType()} is not supported.");
         }
 
         public Task AddOrUpdate(GameModel game)
@@ -92,10 +119,17 @@ namespace PlayStats.Models
             });
         }
 
-        public Task AddOrUpdate(LinkedGameModel game)
+        public Task AddOrUpdate(LinkedGameModel expansion)
         {
-            // TODO: Maybe no need?
-            return Task.CompletedTask;
+            return Task.Factory.StartNew(() =>
+            {
+                var linkedGameEntity = _mapper.Map<LinkedGameEntity>(expansion);
+
+                if (_linkedGames.Keys.Contains(expansion.Id)) _linkedGameAccessor.Update(linkedGameEntity);
+                else _linkedGameAccessor.Create(linkedGameEntity);
+
+                _linkedGames.AddOrUpdate(expansion);
+            });
         }
 
         private void LoadPlays()
