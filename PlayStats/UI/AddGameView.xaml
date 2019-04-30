@@ -9,6 +9,7 @@
   x:TypeArguments="local:AddGameViewModel"
   xmlns:reactiveui="http://reactiveui.net"
   xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+  xmlns:services="clr-namespace:PlayStats.Services"
   mc:Ignorable="d" 
   d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
@@ -82,20 +83,45 @@
         <Button x:Name="SaveButton" IsDefault="True" Margin="4 10" Style="{StaticResource MaterialDesignRaisedDarkButton}" ToolTip="Save game to the database.">SAVE</Button>
       </StackPanel>
     </GroupBox>
-    <GroupBox VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
-              x:Name="RecentPlaysGroupBox" HorizontalAlignment="Stretch"
-              Style="{DynamicResource MaterialDesignGroupBox}"
-              Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
-              BorderThickness="0" Grid.Column="1">
-      <Grid Margin="4">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="*"/>
-          <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-
-        
-      </Grid>
+    <GroupBox Header="BGG data"
+      VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+      x:Name="RecentPlaysGroupBox" HorizontalAlignment="Stretch"
+      Style="{DynamicResource MaterialDesignGroupBox}"
+      Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
+      BorderThickness="0" Grid.Column="1">
+      <StackPanel Orientation="Vertical" Grid.Column="1" Margin="4 4 4 10" >
+        <!--<ComboBox x:Name="BggGameComboBox" Margin="4 10"
+                  IsEditable="True" DisplayMemberPath="Name"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="Magnify"  />
+              <TextBlock>BGG name</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+          <ComboBox.ItemsPanel>
+            <ItemsPanelTemplate >
+              <VirtualizingStackPanel/>
+            </ItemsPanelTemplate>
+          </ComboBox.ItemsPanel>
+        </ComboBox>-->
+        <TextBox x:Name="BggGameNameTextBox" Margin="4 10" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="Magnify" />
+              <TextBlock>Name</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+        </TextBox>
+        <ListBox x:Name="AvailableBggGames" KeyboardNavigation.DirectionalNavigation="Contained" Height="150" Margin="4 10">
+          <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type services:BggGameInfo}">
+              <TextBlock Text="{Binding Name}"/>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+       
+      </StackPanel>
     </GroupBox>
   </Grid>
 </reactiveui:ReactiveUserControl>

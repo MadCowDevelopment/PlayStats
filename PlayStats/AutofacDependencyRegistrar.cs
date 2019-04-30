@@ -43,6 +43,7 @@ namespace PlayStats
             // Services
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>();
+            builder.RegisterType<BggService>().As<IBggService>();
             builder.RegisterInstance(AutoMapperConfigurator.CreateMapper()).As<IMapper>();
 
             builder.Register(ctx => _container);

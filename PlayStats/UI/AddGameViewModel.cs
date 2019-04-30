@@ -6,7 +6,6 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AutoMapper;
 using DynamicData;
 using DynamicData.Binding;
 using PlayStats.Data;
@@ -21,11 +20,13 @@ namespace PlayStats.UI
     public class AddGameViewModel : ValidationViewModel
     {
         private readonly IRepository _repository;
+        private readonly IBggService _bggService;
         private readonly INotificationService _notificationService;
 
-        public AddGameViewModel(IRepository repository, INotificationService notificationService, IMapper mapper)
+        public AddGameViewModel(IRepository repository, IBggService bggService, INotificationService notificationService)
         {
             _repository = repository;
+            _bggService = bggService;
             _notificationService = notificationService;
 
             _availableSoloModes =
@@ -43,6 +44,16 @@ namespace PlayStats.UI
                 .Transform(p => new AvailableGameViewModel(p.Id, p.Name))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _availableGames).Subscribe();
+
+            _availableBggGames = this
+                .WhenAnyValue(x => x.BggGameName)
+                .Throttle(TimeSpan.FromMilliseconds(400))
+                .Select(term => term?.Trim())
+                .DistinctUntilChanged()
+                .Where(term => !string.IsNullOrWhiteSpace(term))
+                .SelectMany(SearchBggGames)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToProperty(this, x => x.AvailableBggGames);
 
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SaveGame, canSave);
@@ -70,6 +81,9 @@ namespace PlayStats.UI
         [Reactive] public bool IsDelivered { get; set; }
         [Reactive] public SoloModeViewModel SelectedSoloMode { get; set; }
 
+        [Reactive] public BggGameInfo SelectedBggGame { get; set; }
+        [Reactive] public string BggGameName { get; set; }
+
         public ICommand Save { get; }
 
         private readonly ReadOnlyObservableCollection<AvailableGameViewModel> _availableGames;
@@ -78,12 +92,16 @@ namespace PlayStats.UI
         private readonly ReadOnlyCollection<SoloModeViewModel> _availableSoloModes;
         public IEnumerable<SoloModeViewModel> AvailableSoloModes => _availableSoloModes;
 
+        private readonly ObservableAsPropertyHelper<IEnumerable<BggGameInfo>> _availableBggGames;
+        public IEnumerable<BggGameInfo> AvailableBggGames => _availableBggGames.Value;
+        
         private async Task SaveGame(CancellationToken cancellationToken)
         {
             try
             {
                 var game = IsGameChecked ? CreateGame() : (GameModelBase)CreateExpansion();
                 game.IsDelivered = IsDelivered;
+                game.PurchasePrice = PurchasePrice.Value;
                 await _repository.AddOrUpdate(game);
             }
             catch (Exception)
@@ -107,6 +125,11 @@ namespace PlayStats.UI
         {
             var expansion = _repository.CreateLinkedGame(SelectedGame.Id);
             return expansion;
+        }
+
+        private Task<IEnumerable<BggGameInfo>> SearchBggGames(string term, CancellationToken token)
+        {
+            return _bggService.SearchGames(term, token);
         }
     }
 

@@ -40,6 +40,18 @@ namespace PlayStats.UI
                     v => v.SoloModeComboBox.ItemsSource,
                     disposableRegistration);
 
+                //this.Bind(ViewModel,
+                //    vm => vm.SelectedBggGame,
+                //    v => v.BggGameComboBox.SelectedItem);
+
+                this.Bind(ViewModel,
+                    vm => vm.BggGameName,
+                    v => v.BggGameNameTextBox.Text);
+                this.OneWayBind(ViewModel,
+                    vm => vm.AvailableBggGames,
+                    v => v.AvailableBggGames.ItemsSource,
+                    disposableRegistration);
+
                 this.OneWayBind(ViewModel,
                     vm => vm.IsGameChecked,
                     v => v.GameNameTextBox.Visibility);

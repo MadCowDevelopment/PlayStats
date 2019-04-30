@@ -13,6 +13,10 @@ namespace PlayStats.Models
     {
         public GameModel(Guid id, IObservable<IChangeSet<PlayModel, Guid>> plays, IObservable<IChangeSet<LinkedGameModel, Guid>> linkedGames) : base(id)
         {
+            IsGenuine = true;
+            Rating = 0;
+            DesireToPlay = 10;
+
             plays.ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _plays)
                 .Subscribe();
@@ -27,8 +31,8 @@ namespace PlayStats.Models
                 .Select(TimeSpan.FromTicks)
                 .ToPropertyEx(this, p => p.TotalTimePlayed);
 
-            this.WhenAnyValue(p => p.TotalTimePlayed, p => p.PurchasePrice)
-                .Select(p => TotalTimePlayed.TotalHours > 0 ? PurchasePrice / TotalTimePlayed.TotalHours : 0)
+            this.WhenAnyValue(p => p.TotalTimePlayed, p => p.PurchasePrice, p=>p.SellPrice)
+                .Select(p => TotalTimePlayed.TotalHours > 0 ? (PurchasePrice - SellPrice) / TotalTimePlayed.TotalHours : 0)
                 .ToPropertyEx(this, x => x.Value);
         }
 
