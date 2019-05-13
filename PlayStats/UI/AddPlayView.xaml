@@ -90,6 +90,13 @@
               <DataGridTextColumn Header="Date" Width="120" Binding="{Binding Path=Date, Converter={StaticResource DateTimeToDateConverter}}" SortDirection="Descending"/>
               <DataGridTextColumn Header="Duration" Width="120" Binding="{Binding Path=Duration}"/>
               <DataGridTextColumn Header="Comment" Width="*" Binding="{Binding Path=Comment}"/>
+              <DataGridTemplateColumn>
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <Button Command="{Binding Delete}">Delete</Button>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
             </DataGrid.Columns>
           </DataGrid>
           <TextBlock  Grid.Row="1"

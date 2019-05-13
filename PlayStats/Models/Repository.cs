@@ -23,6 +23,7 @@ namespace PlayStats.Models
         IObservable<IChangeSet<GameModel, Guid>> Games { get; }
 
         IObservable<IChangeSet<PlayModel, Guid>> Plays { get; }
+        void DeletePlay(PlayModel play);
     }
 
     public class Repository : IRepository
@@ -50,6 +51,8 @@ namespace PlayStats.Models
 
         public IObservable<IChangeSet<GameModel, Guid>> Games => _games.Connect();
         public IObservable<IChangeSet<PlayModel, Guid>> Plays => _plays.Connect();
+
+
         private IObservable<IChangeSet<LinkedGameModel, Guid>> LinkedGames => _linkedGames.Connect();
 
         public Task Load()
@@ -65,6 +68,12 @@ namespace PlayStats.Models
         public PlayModel CreatePlay(Guid gameId)
         {
             return new PlayModel(Guid.NewGuid(), gameId);
+        }
+
+        public void DeletePlay(PlayModel play)
+        {
+            _plays.Remove(play);
+            _playAccessor.Delete(play.Id);
         }
 
         public GameModel CreateGame()

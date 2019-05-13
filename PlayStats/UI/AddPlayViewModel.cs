@@ -54,10 +54,9 @@ namespace PlayStats.UI
                 .Filter(selectedGameFilter)
                 .Sort(SortExpressionComparer<PlayModel>.Descending(p => p.Date))
                 .Virtualise(whenTopChanges)
+                .Transform(p => new RecentPlayViewModel(_repository, p))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _recentPlays).Subscribe();
-
-            
 
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SavePlay, canSave);
@@ -111,12 +110,12 @@ namespace PlayStats.UI
         private readonly ReadOnlyObservableCollection<AvailableGameViewModel> _availableGames;
         public IEnumerable<AvailableGameViewModel> AvailableGames => _availableGames;
 
-        private readonly ReadOnlyObservableCollection<PlayModel> _recentPlays;
-        public IEnumerable<PlayModel> RecentPlays => _recentPlays;
+        private readonly ReadOnlyObservableCollection<RecentPlayViewModel> _recentPlays;
+        public IEnumerable<RecentPlayViewModel> RecentPlays => _recentPlays;
 
         public string RecentPlaysHeader { [ObservableAsProperty] get; }
 
-        public PlayModel MostRecentPlay => _recentPlays.FirstOrDefault();
+        public RecentPlayViewModel MostRecentPlay => _recentPlays.FirstOrDefault();
 
         private async Task SavePlay(CancellationToken cancellationToken)
         {
@@ -146,6 +145,40 @@ namespace PlayStats.UI
             }
 
             _notificationService.Queue("Play saved successfully.");
+        }
+
+        public class RecentPlayViewModel : ReactiveObject
+        {
+            private readonly IRepository _repository;
+            private readonly PlayModel _play;
+
+            public RecentPlayViewModel(IRepository repository, PlayModel play)
+            {
+                _repository = repository;
+                _play = play;
+
+                Delete = ReactiveCommand.Create(() => _repository.DeletePlay(_play));
+            }
+
+            public DateTime Date
+            {
+                get => _play.Date;
+                set => _play.Date = value;
+            }
+
+            public TimeSpan Duration
+            {
+                get => _play.Duration;
+                set => _play.Duration = value;
+            }
+            public string Comment
+            {
+                get => _play.Comment;
+                set => _play.Comment = value;
+            }
+
+            public ICommand Delete { get; }
+            public Guid Id => _play.Id;
         }
     }
 }

@@ -33,17 +33,14 @@ namespace PlayStats.UI
                 new ReadOnlyCollection<SoloModeViewModel>(
                     ((SoloMode[]) Enum.GetValues(typeof(SoloMode))).Select(p => new SoloModeViewModel(p)).ToList());
 
-            IsGameChecked = true;
-            IsDelivered = false;
-            SelectedSoloMode = _availableSoloModes[1];
-
-            AddValidationRules();
-
-            _repository.Games
+           _repository.Games
                 .Sort(SortExpressionComparer<GameModel>.Ascending(p => p.Name))
                 .Transform(p => new AvailableGameViewModel(p.Id, p.Name))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _availableGames).Subscribe();
+
+           SetInitialValues();
+           AddValidationRules();
 
             _availableBggGames = this
                 .WhenAnyValue(x => x.BggGameName)
@@ -57,20 +54,6 @@ namespace PlayStats.UI
 
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SaveGame, canSave);
-        }
-
-        private void AddValidationRules()
-        {
-            AddRule(new DelegateRule<AddGameViewModel>(nameof(SelectedGame),
-                p => IsExpansionChecked && SelectedGame == null ? "No game selected" : string.Empty));
-            AddRule(new DelegateRule<AddGameViewModel>(nameof(GameName),
-                p => IsGameChecked && string.IsNullOrEmpty(GameName) ? "Game needs a name" : string.Empty));
-            AddRule(new DelegateRule<AddGameViewModel>(nameof(GameName),
-                p => IsGameChecked && GameName != null && AvailableGames.Any(g=>g.Name.ToLower().Equals(GameName.ToLower())) ? "Game with same name already exists" : string.Empty));
-            AddRule(new DelegateRule<AddGameViewModel>(nameof(PurchasePrice),
-                p => !PurchasePrice.HasValue || PurchasePrice.Value < 1 ? "Purchase price needs to be greater than or equal to 1" : string.Empty));
-            AddRule(new DelegateRule<AddGameViewModel>(nameof(SelectedSoloMode),
-                p => IsGameChecked && SelectedSoloMode == null ? "No solo mode selected" : string.Empty));
         }
 
         [Reactive] public AvailableGameViewModel SelectedGame { get; set; }
@@ -94,7 +77,30 @@ namespace PlayStats.UI
 
         private readonly ObservableAsPropertyHelper<IEnumerable<BggGameInfo>> _availableBggGames;
         public IEnumerable<BggGameInfo> AvailableBggGames => _availableBggGames.Value;
-        
+
+        private void SetInitialValues()
+        {
+            GameName = string.Empty;
+            PurchasePrice = 0;
+            IsGameChecked = true;
+            IsDelivered = false;
+            SelectedSoloMode = _availableSoloModes[1];
+        }
+
+        private void AddValidationRules()
+        {
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(SelectedGame),
+                p => IsExpansionChecked && SelectedGame == null ? "No game selected" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(GameName),
+                p => IsGameChecked && string.IsNullOrEmpty(GameName) ? "Game needs a name" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(GameName),
+                p => IsGameChecked && GameName != null && AvailableGames.Any(g => g.Name.ToLower().Equals(GameName.ToLower())) ? "Game with same name already exists" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(PurchasePrice),
+                p => !PurchasePrice.HasValue || PurchasePrice.Value < 1 ? "Purchase price needs to be greater than or equal to 1" : string.Empty));
+            AddRule(new DelegateRule<AddGameViewModel>(nameof(SelectedSoloMode),
+                p => IsGameChecked && SelectedSoloMode == null ? "No solo mode selected" : string.Empty));
+        }
+
         private async Task SaveGame(CancellationToken cancellationToken)
         {
             try
@@ -103,6 +109,7 @@ namespace PlayStats.UI
                 game.IsDelivered = IsDelivered;
                 game.PurchasePrice = PurchasePrice.Value;
                 await _repository.AddOrUpdate(game);
+                SetInitialValues();
             }
             catch (Exception)
             {
