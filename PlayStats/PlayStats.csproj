@@ -143,6 +143,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Services\BggDesigner.cs" />
+    <Compile Include="Services\BggGameDetail.cs" />
+    <Compile Include="Services\BggGameInfo.cs" />
+    <Compile Include="Services\BggPublisher.cs" />
     <Compile Include="Services\BggService.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ViewModelFactory.cs" />

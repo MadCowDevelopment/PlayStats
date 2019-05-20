@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using System.Linq;
+using ReactiveUI;
 using System.Reactive.Disposables;
 
 namespace PlayStats.UI
@@ -40,9 +41,9 @@ namespace PlayStats.UI
                     v => v.SoloModeComboBox.ItemsSource,
                     disposableRegistration);
 
-                //this.Bind(ViewModel,
-                //    vm => vm.SelectedBggGame,
-                //    v => v.BggGameComboBox.SelectedItem);
+                this.Bind(ViewModel,
+                    vm => vm.SelectedBggGame,
+                    v => v.AvailableBggGames.SelectedItem);
 
                 this.Bind(ViewModel,
                     vm => vm.BggGameName,
@@ -51,6 +52,24 @@ namespace PlayStats.UI
                     vm => vm.AvailableBggGames,
                     v => v.AvailableBggGames.ItemsSource,
                     disposableRegistration);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.SelectedBggGameDetail.FullName,
+                    v => v.BggFullNameTextBox.Text);
+                this.OneWayBind(ViewModel,
+                    vm => vm.SelectedBggGameDetail.YearPublished,
+                    v => v.BggYearPublishedTextBox.Text);
+                this.OneWayBind(ViewModel,
+                    vm => vm.SelectedBggGameDetail.Designers,
+                    v => v.BggDesignersTextBox.Text,
+                    d => string.Join(", ", d.Select(x => x.Name)));
+                this.OneWayBind(ViewModel,
+                    vm => vm.SelectedBggGameDetail.Publishers,
+                    v => v.BggPublishersTextBox.Text,
+                    p => string.Join(", ", p.Select(x => x.Name)));
+                this.OneWayBind(ViewModel,
+                    vm => vm.SelectedBggGameDetail.Description,
+                    v => v.BggDescriptionTextBox.Text);
 
                 this.OneWayBind(ViewModel,
                     vm => vm.IsGameChecked,

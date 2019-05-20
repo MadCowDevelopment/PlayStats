@@ -15,7 +15,7 @@
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="400"/>
-      <ColumnDefinition Width="*" MaxWidth="400"/>
+      <ColumnDefinition Width="*" MaxWidth="600"/>
     </Grid.ColumnDefinitions>
     <GroupBox
       Grid.Column="0"
@@ -90,21 +90,7 @@
       Margin="8" materialDesign:ShadowAssist.ShadowDepth="Depth3"
       BorderThickness="0" Grid.Column="1">
       <StackPanel Orientation="Vertical" Grid.Column="1" Margin="4 4 4 10" >
-        <!--<ComboBox x:Name="BggGameComboBox" Margin="4 10"
-                  IsEditable="True" DisplayMemberPath="Name"
-                  Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-          <materialDesign:HintAssist.Hint>
-            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
-              <materialDesign:PackIcon Kind="Magnify"  />
-              <TextBlock>BGG name</TextBlock>
-            </StackPanel>
-          </materialDesign:HintAssist.Hint>
-          <ComboBox.ItemsPanel>
-            <ItemsPanelTemplate >
-              <VirtualizingStackPanel/>
-            </ItemsPanelTemplate>
-          </ComboBox.ItemsPanel>
-        </ComboBox>-->
+
         <TextBox x:Name="BggGameNameTextBox" Margin="4 10" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
           <materialDesign:HintAssist.Hint>
             <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
@@ -120,7 +106,54 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-       
+
+        <UniformGrid Columns="2" Margin="4 10">
+          <TextBox x:Name="BggFullNameTextBox" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+            <materialDesign:HintAssist.Hint>
+              <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+                <materialDesign:PackIcon Kind="Coin" />
+                <TextBlock>Fullname</TextBlock>
+              </StackPanel>
+            </materialDesign:HintAssist.Hint>
+          </TextBox>
+          <TextBox x:Name="BggYearPublishedTextBox" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+            <materialDesign:HintAssist.Hint>
+              <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+                <materialDesign:PackIcon Kind="Coin" />
+                <TextBlock>Year published</TextBlock>
+              </StackPanel>
+            </materialDesign:HintAssist.Hint>
+          </TextBox>
+        </UniformGrid>
+
+        <TextBox x:Name="BggDesignersTextBox" Margin="4 10" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="Coin" />
+              <TextBlock>Designer(s)</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+        </TextBox>
+
+        <TextBox x:Name="BggPublishersTextBox" Margin="4 10" Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="Coin" />
+              <TextBlock>Publisher(s)</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+        </TextBox>
+
+        <TextBox x:Name="BggDescriptionTextBox" Margin="4 10" MinHeight="160" Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                 VerticalAlignment="Top" AcceptsReturn="True" TextWrapping="Wrap">
+          <materialDesign:HintAssist.Hint>
+            <StackPanel Orientation="Horizontal" Margin="-2 0 0 0">
+              <materialDesign:PackIcon Kind="CommentText" />
+              <TextBlock>Description</TextBlock>
+            </StackPanel>
+          </materialDesign:HintAssist.Hint>
+        </TextBox>
+
       </StackPanel>
     </GroupBox>
   </Grid>

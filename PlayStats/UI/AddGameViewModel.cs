@@ -31,16 +31,16 @@ namespace PlayStats.UI
 
             _availableSoloModes =
                 new ReadOnlyCollection<SoloModeViewModel>(
-                    ((SoloMode[]) Enum.GetValues(typeof(SoloMode))).Select(p => new SoloModeViewModel(p)).ToList());
+                    ((SoloMode[])Enum.GetValues(typeof(SoloMode))).Select(p => new SoloModeViewModel(p)).ToList());
 
-           _repository.Games
-                .Sort(SortExpressionComparer<GameModel>.Ascending(p => p.Name))
-                .Transform(p => new AvailableGameViewModel(p.Id, p.Name))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Bind(out _availableGames).Subscribe();
+            _repository.Games
+                 .Sort(SortExpressionComparer<GameModel>.Ascending(p => p.Name))
+                 .Transform(p => new AvailableGameViewModel(p.Id, p.Name))
+                 .ObserveOn(RxApp.MainThreadScheduler)
+                 .Bind(out _availableGames).Subscribe();
 
-           SetInitialValues();
-           AddValidationRules();
+            SetInitialValues();
+            AddValidationRules();
 
             _availableBggGames = this
                 .WhenAnyValue(x => x.BggGameName)
@@ -51,6 +51,12 @@ namespace PlayStats.UI
                 .SelectMany(SearchBggGames)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .ToProperty(this, x => x.AvailableBggGames);
+
+            this.WhenAnyValue(x => x.SelectedBggGame)
+                .Throttle(TimeSpan.FromMilliseconds(400))
+                .Select(LoadBggGameDetail)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(async p => await AssignSelectedBggGameDetail(p));
 
             var canSave = WhenDataErrorsChanged.Select(p => !p);
             Save = ReactiveCommand.CreateFromTask(SaveGame, canSave);
@@ -66,6 +72,8 @@ namespace PlayStats.UI
 
         [Reactive] public BggGameInfo SelectedBggGame { get; set; }
         [Reactive] public string BggGameName { get; set; }
+        [Reactive] public BggGameDetail SelectedBggGameDetail { get; set; }
+
 
         public ICommand Save { get; }
 
@@ -76,6 +84,8 @@ namespace PlayStats.UI
         public IEnumerable<SoloModeViewModel> AvailableSoloModes => _availableSoloModes;
 
         private readonly ObservableAsPropertyHelper<IEnumerable<BggGameInfo>> _availableBggGames;
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly object _bggLoadLock = new object();
         public IEnumerable<BggGameInfo> AvailableBggGames => _availableBggGames.Value;
 
         private void SetInitialValues()
@@ -120,6 +130,18 @@ namespace PlayStats.UI
             _notificationService.Queue("Game saved successfully.");
         }
 
+        private async Task AssignSelectedBggGameDetail(Task<BggGameDetail> gameDetail)
+        {
+            if (gameDetail.IsCanceled) return;
+            try
+            {
+                SelectedBggGameDetail = await gameDetail;
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        }
+
         private GameModel CreateGame()
         {
             var game = _repository.CreateGame();
@@ -137,6 +159,18 @@ namespace PlayStats.UI
         private Task<IEnumerable<BggGameInfo>> SearchBggGames(string term, CancellationToken token)
         {
             return _bggService.SearchGames(term, token);
+        }
+
+        private Task<BggGameDetail> LoadBggGameDetail(BggGameInfo bggGameInfo)
+        {
+            lock (_bggLoadLock)
+            {
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = new CancellationTokenSource();
+
+                if (bggGameInfo == null) return Task.FromResult<BggGameDetail>(null);
+                return _bggService.LoadGameDetails(bggGameInfo.Id, _cancellationTokenSource.Token);
+            }
         }
     }
 
