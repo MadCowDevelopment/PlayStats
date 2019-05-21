@@ -54,7 +54,7 @@ namespace PlayStats.Models
 
         #region Calculated properties
 
-        public double Value { [ObservableAsProperty] get; }
+        public double? Value { [ObservableAsProperty] get; }
 
         public TimeSpan TotalTimePlayed { [ObservableAsProperty] get; }
 

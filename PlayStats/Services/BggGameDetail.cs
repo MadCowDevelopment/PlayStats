@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace PlayStats.Services
@@ -12,7 +11,7 @@ namespace PlayStats.Services
         [Reactive] public string Description { get; set; }
         [Reactive] public byte[] Thumbnail { get; set; }
         [Reactive] public byte[] Image { get; set; }
-        [Reactive] public IEnumerable<BggPublisher> Publishers { get; set; }
-        [Reactive] public IEnumerable<BggDesigner> Designers { get; set; }
+        [Reactive] public string Publishers { get; set; }
+        [Reactive] public string Designers { get; set; }
     }
 }

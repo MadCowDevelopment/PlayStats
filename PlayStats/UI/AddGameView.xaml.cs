@@ -1,6 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ReactiveUI;
 using System.Reactive.Disposables;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using PlayStats.Services;
 
 namespace PlayStats.UI
 {
@@ -62,11 +67,11 @@ namespace PlayStats.UI
                 this.OneWayBind(ViewModel,
                     vm => vm.SelectedBggGameDetail.Designers,
                     v => v.BggDesignersTextBox.Text,
-                    d => string.Join(", ", d.Select(x => x.Name)));
+                    d => string.Join(", ", d));
                 this.OneWayBind(ViewModel,
                     vm => vm.SelectedBggGameDetail.Publishers,
                     v => v.BggPublishersTextBox.Text,
-                    p => string.Join(", ", p.Select(x => x.Name)));
+                    p => string.Join(", ", p));
                 this.OneWayBind(ViewModel,
                     vm => vm.SelectedBggGameDetail.Description,
                     v => v.BggDescriptionTextBox.Text);
@@ -82,7 +87,43 @@ namespace PlayStats.UI
                         viewModel => viewModel.Save,
                         view => view.SaveButton)
                     .DisposeWith(disposableRegistration);
-        });
+            });
+        }
+
+        private void BggGameNameTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            OpenPopup();
+        }
+
+        private void BggGameNameTextBox_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            OpenPopup();
+        }
+
+        private void BggGameNameTextBox_OnGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            OpenPopup();
+        }
+
+        private void AvailableBggGames_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var list = sender as ListBox;
+            if (list?.SelectedItem is BggGameInfo gameInfo)
+            {
+                ClosePopup();
+            }
+        }
+
+        private void OpenPopup()
+        {
+            if (AvailableBggGamesPopup == null) return;
+            AvailableBggGamesPopup.IsOpen = true;
+        }
+
+
+        private void ClosePopup()
+        {
+            AvailableBggGamesPopup.IsOpen = false;
         }
     }
 }

@@ -4,9 +4,9 @@
     {
         public string Name { get; set; }
 
-        public double PurchasePrice { get; set; }
+        public double? PurchasePrice { get; set; }
 
-        public double SellPrice { get; set; }
+        public double? SellPrice { get; set; }
 
         public bool IsGenuine { get; set; }
 
@@ -16,7 +16,7 @@
 
         #region BGG data
 
-        public int ObjectId { get; set; }
+        public int? ObjectId { get; set; }
 
         public string FullName { get; set; }
 
@@ -28,9 +28,9 @@
 
         public byte[] Image { get; set; }
 
-        public string Publisher { get; set; }
+        public string Publishers { get; set; }
 
-        public string Designer { get; set; }
+        public string Designers { get; set; }
 
         #endregion
     }

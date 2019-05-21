@@ -23,10 +23,10 @@ namespace PlayStats.Services
         {
             var htmlEncodedTerm = HttpUtility.HtmlEncode(term);
             var url = $"https://boardgamegeek.com/xmlapi/search?search={htmlEncodedTerm}";
-            var webClient = new WebClient();
-            webClient.Encoding = Encoding.UTF8;
-            var xml = await webClient.DownloadStringTaskAsync(new Uri(url));
-            var doc = XDocument.Parse(xml);
+            var httpClient = new HttpClient();
+            var httpResponse = await httpClient.GetAsync(new Uri(url), token);
+            var xml = await httpResponse.Content.ReadAsByteArrayAsync();
+            var doc = XDocument.Parse(Encoding.UTF8.GetString(xml));
             var boardGames = doc.Descendants("boardgame");
 
             var result = new List<BggGameInfo>();
@@ -36,16 +36,17 @@ namespace PlayStats.Services
                 var id = boardGame.Attribute("objectid").Value;
                 result.Add(new BggGameInfo(name, id));
             }
+
             return result.AsEnumerable();
         }
 
         public async Task<BggGameDetail> LoadGameDetails(string id, CancellationToken token)
         {
             var url = $"https://boardgamegeek.com/xmlapi/boardgame/{id}";
-            var webClient = new HttpClient();
-            //webClient.Encoding = Encoding.UTF8;
-            var xml = await webClient.GetAsync(new Uri(url), token);
-            var doc = XDocument.Parse(Encoding.UTF8.GetString(await xml.Content.ReadAsByteArrayAsync()));
+            var httpClient = new HttpClient();
+            var httpResponse = await httpClient.GetAsync(new Uri(url), token);
+            var xml = Encoding.UTF8.GetString(await httpResponse.Content.ReadAsByteArrayAsync());
+            var doc = XDocument.Parse(xml);
             var boardGame = doc.Descendants("boardgame").FirstOrDefault();
 
             var result = new BggGameDetail();
@@ -53,13 +54,11 @@ namespace PlayStats.Services
             result.FullName = boardGame.Element("name").Value;
             result.YearPublished = int.Parse(boardGame.Element("yearpublished").Value);
             result.Description = boardGame.Element("description").Value;
-            result.Thumbnail = await (await webClient.GetAsync(boardGame.Element("thumbnail").Value, token)).Content.ReadAsByteArrayAsync();
-            result.Image = await (await webClient.GetAsync(boardGame.Element("image").Value, token)).Content.ReadAsByteArrayAsync();
-            result.Publishers = boardGame.Descendants("boardgamepublisher").Select(p => new BggPublisher
-                {ObjectId = int.Parse(p.Attribute("objectid").Value), Name = p.Value}).ToList();
-            result.Designers = boardGame.Descendants("boardgamedesigner").Select(p => new BggDesigner
-                {ObjectId = int.Parse(p.Attribute("objectid").Value), Name = p.Value}).ToList();
-            
+            result.Thumbnail = await (await httpClient.GetAsync(boardGame.Element("thumbnail").Value, token)).Content.ReadAsByteArrayAsync();
+            result.Image = await (await httpClient.GetAsync(boardGame.Element("image").Value, token)).Content.ReadAsByteArrayAsync();
+            result.Publishers = string.Join(", ", boardGame.Descendants("boardgamepublisher").Select(p => p.Value).ToList());
+            result.Designers = string.Join(", ", boardGame.Descendants("boardgamedesigner").Select(p => p.Value).ToList());
+
             return result;
         }
     }

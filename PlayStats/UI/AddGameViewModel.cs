@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -42,15 +43,14 @@ namespace PlayStats.UI
             SetInitialValues();
             AddValidationRules();
 
-            _availableBggGames = this
-                .WhenAnyValue(x => x.BggGameName)
+            this.WhenAnyValue(x => x.BggGameName)
                 .Throttle(TimeSpan.FromMilliseconds(400))
                 .Select(term => term?.Trim())
                 .DistinctUntilChanged()
                 .Where(term => !string.IsNullOrWhiteSpace(term))
-                .SelectMany(SearchBggGames)
+                .Select(SearchBggGames)
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .ToProperty(this, x => x.AvailableBggGames);
+                .Subscribe( async p => await AssignAvailableBggGames(p));
 
             this.WhenAnyValue(x => x.SelectedBggGame)
                 .Throttle(TimeSpan.FromMilliseconds(400))
@@ -70,6 +70,7 @@ namespace PlayStats.UI
         [Reactive] public bool IsDelivered { get; set; }
         [Reactive] public SoloModeViewModel SelectedSoloMode { get; set; }
 
+        [Reactive] public IEnumerable<BggGameInfo> AvailableBggGames { get; set; }
         [Reactive] public BggGameInfo SelectedBggGame { get; set; }
         [Reactive] public string BggGameName { get; set; }
         [Reactive] public BggGameDetail SelectedBggGameDetail { get; set; }
@@ -83,10 +84,10 @@ namespace PlayStats.UI
         private readonly ReadOnlyCollection<SoloModeViewModel> _availableSoloModes;
         public IEnumerable<SoloModeViewModel> AvailableSoloModes => _availableSoloModes;
 
-        private readonly ObservableAsPropertyHelper<IEnumerable<BggGameInfo>> _availableBggGames;
-        private CancellationTokenSource _cancellationTokenSource;
-        private readonly object _bggLoadLock = new object();
-        public IEnumerable<BggGameInfo> AvailableBggGames => _availableBggGames.Value;
+        private CancellationTokenSource _infoCTS;
+        private CancellationTokenSource _detailsCTS;
+        private readonly object _infoLoadLock = new object();
+        private readonly object _detailLoadLock = new object();
 
         private void SetInitialValues()
         {
@@ -95,6 +96,8 @@ namespace PlayStats.UI
             IsGameChecked = true;
             IsDelivered = false;
             SelectedSoloMode = _availableSoloModes[1];
+            BggGameName = string.Empty;
+            SelectedBggGameDetail = null;
         }
 
         private void AddValidationRules()
@@ -118,6 +121,15 @@ namespace PlayStats.UI
                 var game = IsGameChecked ? CreateGame() : (GameModelBase)CreateExpansion();
                 game.IsDelivered = IsDelivered;
                 game.PurchasePrice = PurchasePrice.Value;
+
+                game.FullName = SelectedBggGameDetail?.FullName;
+
+                game.ObjectId = SelectedBggGameDetail?.ObjectId;
+                game.YearPublished = SelectedBggGameDetail?.YearPublished;
+                game.Designers = SelectedBggGameDetail?.Designers;
+                game.Publishers = SelectedBggGameDetail?.Publishers;
+                game.Description = SelectedBggGameDetail?.Description;
+
                 await _repository.AddOrUpdate(game);
                 SetInitialValues();
             }
@@ -128,18 +140,6 @@ namespace PlayStats.UI
             }
 
             _notificationService.Queue("Game saved successfully.");
-        }
-
-        private async Task AssignSelectedBggGameDetail(Task<BggGameDetail> gameDetail)
-        {
-            if (gameDetail.IsCanceled) return;
-            try
-            {
-                SelectedBggGameDetail = await gameDetail;
-            }
-            catch (TaskCanceledException)
-            {
-            }
         }
 
         private GameModel CreateGame()
@@ -156,20 +156,51 @@ namespace PlayStats.UI
             return expansion;
         }
 
-        private Task<IEnumerable<BggGameInfo>> SearchBggGames(string term, CancellationToken token)
+        private Task<IEnumerable<BggGameInfo>> SearchBggGames(string term)
         {
-            return _bggService.SearchGames(term, token);
+            lock (_infoLoadLock)
+            {
+                _infoCTS?.Cancel();
+                _infoCTS = new CancellationTokenSource();
+                return _bggService.SearchGames(term, _infoCTS.Token);
+            }
+        }
+
+        private async Task AssignAvailableBggGames(Task<IEnumerable<BggGameInfo>> bggGameInfos)
+        {
+            try
+            {
+                AvailableBggGames = await bggGameInfos;
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         private Task<BggGameDetail> LoadBggGameDetail(BggGameInfo bggGameInfo)
         {
-            lock (_bggLoadLock)
+            lock (_detailLoadLock)
             {
-                _cancellationTokenSource?.Cancel();
-                _cancellationTokenSource = new CancellationTokenSource();
+                _detailsCTS?.Cancel();
+                _detailsCTS = new CancellationTokenSource();
 
                 if (bggGameInfo == null) return Task.FromResult<BggGameDetail>(null);
-                return _bggService.LoadGameDetails(bggGameInfo.Id, _cancellationTokenSource.Token);
+                return _bggService.LoadGameDetails(bggGameInfo.Id, _detailsCTS.Token);
+            }
+        }
+
+        private async Task AssignSelectedBggGameDetail(Task<BggGameDetail> gameDetail)
+        {
+            try
+            {
+                SelectedBggGameDetail = await gameDetail;
+                if (string.IsNullOrWhiteSpace(GameName))
+                {
+                    GameName = SelectedBggGameDetail?.FullName;
+                }
+            }
+            catch (OperationCanceledException)
+            {
             }
         }
     }
