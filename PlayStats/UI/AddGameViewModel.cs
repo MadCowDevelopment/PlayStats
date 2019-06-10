@@ -96,8 +96,10 @@ namespace PlayStats.UI
             IsGameChecked = true;
             IsDelivered = false;
             SelectedSoloMode = _availableSoloModes[1];
+
             BggGameName = string.Empty;
             SelectedBggGameDetail = null;
+            AvailableBggGames = Enumerable.Empty<BggGameInfo>();
         }
 
         private void AddValidationRules()
