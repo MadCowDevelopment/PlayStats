@@ -36,9 +36,9 @@ namespace PlayStats
 
             // Data
             builder.RegisterType<Repository>().As<IRepository>().SingleInstance();
-            builder.RegisterType<PlayAccessor>().As<IDataAccessor<PlayEntity>>();
-            builder.RegisterType<GameAccessor>().As<IDataAccessor<GameEntity>>();
-            builder.RegisterType<LinkedGameAccessor>().As<IDataAccessor<LinkedGameEntity>>();
+            builder.RegisterType<LiteDbPlayAccessor>().As<IDataAccessor<PlayEntity>>();
+            builder.RegisterType<LiteDbGameAccessor>().As<IDataAccessor<GameEntity>>();
+            builder.RegisterType<LiteDbLinkedGameAccessor>().As<IDataAccessor<LinkedGameEntity>>();
 
             // Services
             builder.RegisterType<NotificationService>().As<INotificationService>();
