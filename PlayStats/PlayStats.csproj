@@ -120,6 +120,7 @@
     <Compile Include="Data\Entity.cs" />
     <Compile Include="Data\GameEntity.cs" />
     <Compile Include="Data\GameEntityBase.cs" />
+    <Compile Include="Data\IDataAccessor.cs" />
     <Compile Include="Data\LinkedGameEntity.cs" />
     <Compile Include="Data\LiteDBAccessor.cs" />
     <Compile Include="Data\PlayEntity.cs" />

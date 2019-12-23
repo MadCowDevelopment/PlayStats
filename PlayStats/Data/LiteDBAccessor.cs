@@ -6,26 +6,12 @@ using System.Linq;
 
 namespace PlayStats.Data
 {
-    public class PlayAccessor : LiteDBAccessor<PlayEntity>
-    {
-    }
+    public class LiteDbPlayAccessor : LiteDBAccessor<PlayEntity> { }
 
-    public class GameAccessor : LiteDBAccessor<GameEntity>
-    {
-    }
+    public class LiteDbGameAccessor : LiteDBAccessor<GameEntity> { }
 
-    public class LinkedGameAccessor : LiteDBAccessor<LinkedGameEntity>
-    {
-    }
+    public class LiteDbLinkedGameAccessor : LiteDBAccessor<LinkedGameEntity> { }
 
-    public interface IDataAccessor<T> where T : Entity
-    {
-        void Create(T entity);
-        void Update(T entity);
-        void Delete(Guid id);
-        IEnumerable<T> GetAll();
-    }
-    
     public abstract class LiteDBAccessor<T> : IDataAccessor<T> where T : Entity
     {
         private readonly string DatabaseFile =
