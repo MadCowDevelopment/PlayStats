@@ -4,6 +4,11 @@ using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI;
+using PlayStats.UI.Tabs.AddGame;
+using PlayStats.UI.Tabs.AddPlay;
+using PlayStats.UI.Tabs.GameGrid;
+using PlayStats.UI.Tabs.GameList;
+using PlayStats.UI.Tabs.Home;
 
 namespace PlayStats
 {
@@ -44,6 +49,7 @@ namespace PlayStats
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<ViewModelFactory>().As<IViewModelFactory>();
             builder.RegisterType<BggService>().As<IBggService>();
+            builder.RegisterType<DialogService>().As<IDialogService>();
             builder.RegisterInstance(AutoMapperConfigurator.CreateMapper()).As<IMapper>();
 
             builder.Register(ctx => _container);

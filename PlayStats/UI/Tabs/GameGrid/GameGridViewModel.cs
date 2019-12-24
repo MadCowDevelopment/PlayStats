@@ -1,12 +1,12 @@
-﻿using DynamicData;
-using PlayStats.Models;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using DynamicData;
+using PlayStats.Models;
+using ReactiveUI;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.GameGrid
 {
     public class GameGridViewModel : ReactiveObject
     {

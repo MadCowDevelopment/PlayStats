@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,11 +11,12 @@ using DynamicData.Binding;
 using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
+using PlayStats.UI.Tabs.Shared;
 using PlayStats.UI.Validation;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.AddGame
 {
     public class AddGameViewModel : ValidationViewModel
     {

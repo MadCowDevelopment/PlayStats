@@ -1,10 +1,11 @@
 ﻿<reactiveui:ReactiveUserControl
-  x:Class="PlayStats.UI.GameDetailsView"
+  x:Class="PlayStats.UI.Tabs.GameList.GameDetailsView"
   xmlns:local="clr-namespace:PlayStats.UI"
-  x:TypeArguments="local:GameDetailsViewModel"
+  x:TypeArguments="gameList:GameDetailsViewModel"
   xmlns:reactiveui="http://reactiveui.net"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:gameList="clr-namespace:PlayStats.UI.Tabs.GameList">
   <Grid>
     <TextBlock TextWrapping="WrapWithOverflow" 
                  Margin="6" VerticalAlignment="Center">

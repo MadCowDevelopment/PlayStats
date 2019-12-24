@@ -11,12 +11,13 @@ using DynamicData;
 using DynamicData.Binding;
 using PlayStats.Models;
 using PlayStats.Services;
+using PlayStats.UI.Tabs.Shared;
 using PlayStats.UI.Validation;
 using PlayStats.Utils;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.AddPlay
 {
     public class AddPlayViewModel : ValidationViewModel
     {
@@ -179,6 +180,17 @@ namespace PlayStats.UI
 
             public ICommand Delete { get; }
             public Guid Id => _play.Id;
+        }
+
+        private class TopRequest : IVirtualRequest
+        {
+            public TopRequest(int size)
+            {
+                Size = size;
+            }
+
+            public int Size { get; }
+            public int StartIndex { get; } = 0;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using ReactiveUI;
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
+using ReactiveUI;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.GameList
 {
     // The class derives off ReactiveUserControl which contains the ViewModel property.
     // In our MainWindow when we register the ListBox with the collection of 

@@ -1,7 +1,7 @@
 ﻿using System;
 using ReactiveUI;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.Shared
 {
     public class AvailableGameViewModel : ReactiveObject
     {

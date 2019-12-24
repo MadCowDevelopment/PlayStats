@@ -1,14 +1,14 @@
-﻿using DynamicData;
-using PlayStats.Models;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
+using DynamicData;
+using PlayStats.Models;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.GameList
 {
     public class GameListViewModel : ReactiveObject
     {

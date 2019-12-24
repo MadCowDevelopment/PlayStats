@@ -1,7 +1,7 @@
-﻿using ReactiveUI;
-using System.Reactive.Disposables;
+﻿using System.Reactive.Disposables;
+using ReactiveUI;
 
-namespace PlayStats.UI
+namespace PlayStats.UI.Tabs.GameList
 {
     /// <summary>
     /// Interaction logic for GameListView.xaml

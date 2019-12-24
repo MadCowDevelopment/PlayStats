@@ -5,6 +5,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using PlayStats.UI.Tabs.Home;
 
 namespace PlayStats.UI
 {
