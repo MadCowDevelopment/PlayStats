@@ -4,6 +4,9 @@ using PlayStats.Data;
 using PlayStats.Models;
 using PlayStats.Services;
 using PlayStats.UI;
+using PlayStats.UI.Dialogs.AppStartup;
+using PlayStats.UI.Dialogs.MessageBox;
+using PlayStats.UI.Dialogs.Update;
 using PlayStats.UI.Tabs.AddGame;
 using PlayStats.UI.Tabs.AddPlay;
 using PlayStats.UI.Tabs.GameGrid;
@@ -31,13 +34,18 @@ namespace PlayStats
 
         private void RegisterServices()
         {
-            // ViewModels
+            // ViewModels - Tabs
             builder.RegisterType<MainWindowViewModel>().AsSelf().SingleInstance();
             builder.RegisterType<HomeViewModel>().AsSelf().SingleInstance();
             builder.RegisterType<AddPlayViewModel>().AsSelf();
             builder.RegisterType<AddGameViewModel>().AsSelf();
             builder.RegisterType<GameListViewModel>().AsSelf().SingleInstance();
             builder.RegisterType<GameGridViewModel>().AsSelf().SingleInstance();
+
+            // ViewModels - Dialogs
+            builder.RegisterType<UpdateViewModel>().AsSelf();
+            builder.RegisterType<ApplicationStartupViewModel>().AsSelf();
+            builder.RegisterType<MessageBoxViewModel>().AsSelf();
 
             // Data
             builder.RegisterType<Repository>().As<IRepository>().SingleInstance();

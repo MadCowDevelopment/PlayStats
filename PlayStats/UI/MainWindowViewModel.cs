@@ -14,7 +14,9 @@ namespace PlayStats.UI
         private readonly IViewModelFactory _viewModelFactory;
         private readonly IRepository _repository;
 
-        public MainWindowViewModel(IViewModelFactory viewModelFactory, IRepository repository)
+        public MainWindowViewModel(
+            IViewModelFactory viewModelFactory, 
+            IRepository repository)
         {
             _viewModelFactory = viewModelFactory;
             _repository = repository;
